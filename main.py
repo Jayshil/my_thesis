@@ -78,6 +78,8 @@ f10.write('#Name\ttc_jul\t+err_jul\t-err_jul\n')
 f19 = open(path1 + '/Results/cal_us_and_evidance/cal_u1_u2.dat','w')
 f19.write('#Name\t\tu1\t\t\t+err\t\t\t-err\t\t\tu2\t\t\t+err\t\t\t-err\n')
 
+f1_to = open(path1 + '/Results/comp_a_r_p/to_the.dat', 'w')
+
 #---------------------------------------------------------------------------------------------
 #--------------------------Taking Data from the data file-------------------------------------
 #---------------------------------------------------------------------------------------------
@@ -165,7 +167,15 @@ for i in range(len(teff)):
 	plt.grid()
 	plt.savefig('Fig.png')
 	plt.close(fig_lightcurve)
-	utl.move_file(in_path=path1,fi_name='/Fig.png',out_path=path1+'/Simulations/'+name[i]+'/',new_name='Fig.png')
+	utl.move_file(in_path=path1,fi_name='/Fig.png',out_path=path1+'/Simulations/'+name[i]+'/',new_name='Fig.pdf')
+	phase_to = (time_bjd - tc[i])/p[i]
+	phase1_to = int(phase_to[0])+1
+	tc1 = np.random.normal(tc[i], tce[i], 10000)
+	p11 = np.random.normal(p[i], pperr[i], 10000)
+	t11 = tc1 + (phase1_to * p11)
+	t0_m = np.median(t11)
+	t0_s = np.std(t11)
+	f1_to.write(name[i] + '\t' + str(t0_m) + '\t' + str(t0_s) + '\n')
 	#--------------------------------------
 	#-------Creating Data file and---------
 	#-------External Parameter file--------
