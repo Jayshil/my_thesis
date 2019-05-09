@@ -13,4 +13,4 @@ As described in thesis, this code will download data products from MAST portal a
 
 To confirm that our fit is indeed good, we also compare several planetary parameters calculated using juliet from TESS data with their existing values from the literature. This comparison will be saved in Results/comp_a_r_p folder.
 
-This code will do all these things autometically. But to do this you have to provide a data file of the targets. This file should contains various planetary as well as stellar parameters. getting_data.py file can help in doing this.
+This code will do all these things autometically. But to do this you have to provide a data file of the targets. This file should contains various planetary as well as stellar parameters. collecting_data.py file can help in doing this.
