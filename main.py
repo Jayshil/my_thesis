@@ -14,6 +14,16 @@ import matplotlib.colors as cls
 path1 = input('Enter the path of this folder: ')
 #path1 = '/home/jayshil/Documents/Dissertation'
 
+os.system('mkdir -p ' + path1 + '/Light-curve')
+os.system('mkdir -p ' + path1 + '/limb-darkening-master/input_files')
+os.system('mkdir -p ' + path1 + '/limb-darkening-master/results')
+os.system('mkdir -p ' + path1 + '/Results')
+os.system('mkdir -p ' + path1 + '/Results/cal_us_and_evidance')
+os.system('mkdir -p ' + path1 + '/Results/comp_a_r_p')
+os.system('mkdir -p ' + path1 + '/Results/stellar_prop')
+os.system('mkdir -p ' + path1 + '/Results/variation_with_temp')
+os.system('mkdir -p ' + path1 + '/Simulations')
+
 #--------------------------------------------------------------------------------------------------
 #--------------------------------Claret (2017) PHOENIX LDCs----------------------------------------
 #--------------------------------------------------------------------------------------------------
@@ -282,10 +292,10 @@ for i in range(len(teff)):
 	#os.system('export LD_LIBRARY_PATH=/home/jayshil/MultiNest/lib/:$LD_LIBRARY_PATH~/.bashrc')
 	#os.system('export PATH=$PATH:$HOME/.local/bin/~/.bashrc')
 	#os.system('cd ' + path1)
-	os.system('python juliet3.py -lcfile Simulations/' + name[i] + '/data/' + name[i] + '_lc.dat' + ' -lceparamfile Simulations/' + name[i] + '/data/' + name[i] + '_lceparam.dat -ldlaw TESS-quadratic -lctimedef TESS-TDB -priorfile Simulations/' + name[i] + '/priors/' + name[i] + '_priors_exm.dat -ofolder Simulations/' + name[i] + '/results/exm -nlive 500')#Ran simulation with Ex-M Kernel
-	os.system('python juliet3.py -lcfile Simulations/' + name[i] + '/data/' + name[i] + '_lc.dat' + ' -lceparamfile Simulations/' + name[i] + '/data/' + name[i] + '_lceparam.dat -ldlaw TESS-quadratic -lctimedef TESS-TDB -priorfile Simulations/' + name[i] + '/priors/' + name[i] + '_priors_qp.dat -ofolder Simulations/' + name[i] + '/results/qp -nlive 500')#Ran simulation with QP Kernel
-	os.system('python juliet3.py -lcfile Simulations/' + name[i] + '/data/' + name[i] + '_lc.dat' + ' -lceparamfile Simulations/' + name[i] + '/data/' + name[i] + '_lceparam.dat -ldlaw TESS-quadratic -lctimedef TESS-TDB -priorfile Simulations/' + name[i] + '/priors/' + name[i] + '_priors_exm1.dat -ofolder Simulations/' + name[i] + '/results/exm1 -nlive 500')#Ran simulation with Ex-M Kernel and making 'a' uniformally distributed
-	os.system('python juliet3.py -lcfile Simulations/' + name[i] + '/data/' + name[i] + '_lc.dat' + ' -lceparamfile Simulations/' + name[i] + '/data/' + name[i] + '_lceparam.dat -ldlaw TESS-quadratic -lctimedef TESS-TDB -priorfile Simulations/' + name[i] + '/priors/' + name[i] + '_priors_qp1.dat -ofolder Simulations/' + name[i] + '/results/qp1 -nlive 500')#Ran simulation with QP Kernel and making 'a' uniformally distributed
+	os.system('python juliet.py -lcfile Simulations/' + name[i] + '/data/' + name[i] + '_lc.dat' + ' -lceparamfile Simulations/' + name[i] + '/data/' + name[i] + '_lceparam.dat -ldlaw TESS-quadratic -lctimedef TESS-TDB -priorfile Simulations/' + name[i] + '/priors/' + name[i] + '_priors_exm.dat -ofolder Simulations/' + name[i] + '/results/exm -nlive 500')#Ran simulation with Ex-M Kernel
+	os.system('python juliet.py -lcfile Simulations/' + name[i] + '/data/' + name[i] + '_lc.dat' + ' -lceparamfile Simulations/' + name[i] + '/data/' + name[i] + '_lceparam.dat -ldlaw TESS-quadratic -lctimedef TESS-TDB -priorfile Simulations/' + name[i] + '/priors/' + name[i] + '_priors_qp.dat -ofolder Simulations/' + name[i] + '/results/qp -nlive 500')#Ran simulation with QP Kernel
+	os.system('python juliet.py -lcfile Simulations/' + name[i] + '/data/' + name[i] + '_lc.dat' + ' -lceparamfile Simulations/' + name[i] + '/data/' + name[i] + '_lceparam.dat -ldlaw TESS-quadratic -lctimedef TESS-TDB -priorfile Simulations/' + name[i] + '/priors/' + name[i] + '_priors_exm1.dat -ofolder Simulations/' + name[i] + '/results/exm1 -nlive 500')#Ran simulation with Ex-M Kernel and making 'a' uniformally distributed
+	os.system('python juliet.py -lcfile Simulations/' + name[i] + '/data/' + name[i] + '_lc.dat' + ' -lceparamfile Simulations/' + name[i] + '/data/' + name[i] + '_lceparam.dat -ldlaw TESS-quadratic -lctimedef TESS-TDB -priorfile Simulations/' + name[i] + '/priors/' + name[i] + '_priors_qp1.dat -ofolder Simulations/' + name[i] + '/results/qp1 -nlive 500')#Ran simulation with QP Kernel and making 'a' uniformally distributed
 	#--------------------------------------
 	#----Starting Limb-Darkening Code------
 	#--------------------------------------
