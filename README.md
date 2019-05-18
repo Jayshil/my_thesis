@@ -7,7 +7,7 @@ This project used some of the codes that I mentioned below:
 
 2. [limb-darkening code](https://github.com/nespinoza/limb-darkening): This code is to generate limb-darkening coefficients for each target.
 
-Our primary goal in this study was to calculate the limb-darkening coefficients using the transit light curve and to compare it with the limb-darkening coefficients calculated using theoretical model stellar atmospheres. To calculate the limb-darkening effect from transit light curves, we used the recently released TESS data. For more details see my thesis by clicking [here](https://jayshilpatel.files.wordpress.com/2019/05/dissertation_final.pdf).
+Our primary goal in this study was to calculate the limb-darkening coefficients using the transit light curve and to compare it with the limb-darkening coefficients calculated using theoretical model stellar atmospheres. To calculate the limb-darkening effect from transit light curves, we used the recently released TESS data. For more details see my thesis by clicking [here](https://jayshilpatel.files.wordpress.com/2019/05/dissertation_final-1.pdf).
 
 As described in thesis, this code will download data products from MAST portal and generate limb darkening coefficients from this data using juliet. Additionally this code will also calculate limb darkening coefficients from ATLAS and PHOENIX model stellar atmospheres using limb-darkening code. This code will then compare them and save result as a errorbar plot in Results/comp_us_and_evidance folder. This would be the main result of this work. This code will also calculate the offset present in LDCs calculated using both ways. Temperature variation in these offsets would be saved in Results/variation_with_temp folder.
 
