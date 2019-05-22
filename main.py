@@ -14,16 +14,6 @@ import matplotlib.colors as cls
 path1 = input('Enter the path of this folder: ')
 #path1 = '/home/jayshil/Documents/Dissertation'
 
-os.system('mkdir -p ' + path1 + '/Light-curve')
-os.system('mkdir -p ' + path1 + '/limb-darkening-master/input_files')
-os.system('mkdir -p ' + path1 + '/limb-darkening-master/results')
-os.system('mkdir -p ' + path1 + '/Results')
-os.system('mkdir -p ' + path1 + '/Results/cal_us_and_evidance')
-os.system('mkdir -p ' + path1 + '/Results/comp_a_r_p')
-os.system('mkdir -p ' + path1 + '/Results/stellar_prop')
-os.system('mkdir -p ' + path1 + '/Results/variation_with_temp')
-os.system('mkdir -p ' + path1 + '/Simulations')
-
 #--------------------------------------------------------------------------------------------------
 #--------------------------------Claret (2017) PHOENIX LDCs----------------------------------------
 #--------------------------------------------------------------------------------------------------
@@ -86,6 +76,10 @@ f1_to = open(path1 + '/Results/comp_a_r_p/to_the.dat', 'w')
 
 name = np.loadtxt('data11.dat', dtype = str, usecols = 0, unpack = True)
 teff, lg, mh, vturb, p, pperr, pnerr, tc, aste, asteperr, astenerr, ecc, ome, rprst, rprstperr, rprstnerr, tce = np.loadtxt('data11.dat', usecols = (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17), unpack = True)
+ra, dec = np.loadtxt('data11.dat', dtype = str, usecols = (18,19), unpack = True)
+
+f_data = open('data2.dat','w')
+f_data.write('#Name\tTeff\tlog(g)\t[M/H]\tVturb\tPeriod\tP+err\tP-err\tTc\ta/R*\ta+err\ta-err\tEccentricity\tOmega\tRp/R*\tr+err\tr-err\tTc-err\n')
 
 #---------------------------------------------------------------------------------------------
 #------------------------ Starting Iteration to calculate things------------------------------
@@ -95,20 +89,24 @@ for i in range(len(teff)):
 	#--------------------------------------
 	#--------Downloading Data--------------
 	#--------------------------------------
-        print('Working on '+name[i])
-	obt = obs.query_object(name[i],radius=0.1)
-	b = np.array([])
-	for j in range(len(obt['intentType'])):
-		if obt['obs_collection'][j] == 'TESS' and obt['dataproduct_type'][j] == 'timeseries':
-			b = np.hstack((b,j))
-	obsid = np.array([])
-	for j1 in range(len(b)):
-		ob = int(b[j1])
-		obsid = np.hstack((obsid,obt['obsid'][ob]))
-        try:
-	    tab = obs.download_products(str(obsid[0]),extension='fits')
-        except:
-            continue
+	print('Working on '+ name[i])
+	ra1 = utl.RA_to_deg(ra[i])
+	dec1 = utl.DEC_to_deg(dec[i])
+	coord = str(ra1) + ' ' + str(dec1)
+	try:
+		obt = obs.query_region(coord,radius=0.1)
+		b = np.array([])
+		for j in range(len(obt['intentType'])):
+			if obt['obs_collection'][j] == 'TESS' and obt['dataproduct_type'][j] == 'timeseries':
+				b = np.hstack((b,j))
+		obsid = np.array([])
+		for j1 in range(len(b)):
+			ob = int(b[j1])
+			obsid = np.hstack((obsid,obt['obsid'][ob]))
+		tab = obs.download_products(str(obsid[0]),extension='fits')
+		f_data.write(name + '\t' + teff + '\t' + lg + '\t' + mh + '\t' + vturb + '\t' + p + '\t' + pperr + '\t' + pnerr + '\t' + tc + '\t' + a + '\t' + aperr + '\t' + anerr + '\t' + ecc + '\t' + omega + '\t' + r + '\t' + rperr + '\t' + rnerr + '\t' + tcerr + '\t' + ra + '\t' + 'dec' + '\n')
+	except:
+		continue
 	for j2 in range(len(tab['Local Path'])):
 		b1 = tab['Local Path'][j2]
 		if b1[-7:] == 'lc.fits':
@@ -167,7 +165,7 @@ for i in range(len(teff)):
 	plt.grid()
 	plt.savefig('Fig.png')
 	plt.close(fig_lightcurve)
-	utl.move_file(in_path=path1,fi_name='/Fig.png',out_path=path1+'/Simulations/'+name[i]+'/',new_name='Fig.pdf')
+	utl.move_file(in_path=path1,fi_name='/Fig.png',out_path=path1+'/Simulations/'+name[i]+'/',new_name='Fig.png')
 	phase_to = (time_bjd - tc[i])/p[i]
 	phase1_to = int(phase_to[0])+1
 	tc1 = np.random.normal(tc[i], tce[i], 10000)
@@ -302,10 +300,10 @@ for i in range(len(teff)):
 	#os.system('export LD_LIBRARY_PATH=/home/jayshil/MultiNest/lib/:$LD_LIBRARY_PATH~/.bashrc')
 	#os.system('export PATH=$PATH:$HOME/.local/bin/~/.bashrc')
 	#os.system('cd ' + path1)
-	os.system('python juliet.py -lcfile Simulations/' + name[i] + '/data/' + name[i] + '_lc.dat' + ' -lceparamfile Simulations/' + name[i] + '/data/' + name[i] + '_lceparam.dat -ldlaw TESS-quadratic -lctimedef TESS-TDB -priorfile Simulations/' + name[i] + '/priors/' + name[i] + '_priors_exm.dat -ofolder Simulations/' + name[i] + '/results/exm -nlive 500')#Ran simulation with Ex-M Kernel
-	os.system('python juliet.py -lcfile Simulations/' + name[i] + '/data/' + name[i] + '_lc.dat' + ' -lceparamfile Simulations/' + name[i] + '/data/' + name[i] + '_lceparam.dat -ldlaw TESS-quadratic -lctimedef TESS-TDB -priorfile Simulations/' + name[i] + '/priors/' + name[i] + '_priors_qp.dat -ofolder Simulations/' + name[i] + '/results/qp -nlive 500')#Ran simulation with QP Kernel
-	os.system('python juliet.py -lcfile Simulations/' + name[i] + '/data/' + name[i] + '_lc.dat' + ' -lceparamfile Simulations/' + name[i] + '/data/' + name[i] + '_lceparam.dat -ldlaw TESS-quadratic -lctimedef TESS-TDB -priorfile Simulations/' + name[i] + '/priors/' + name[i] + '_priors_exm1.dat -ofolder Simulations/' + name[i] + '/results/exm1 -nlive 500')#Ran simulation with Ex-M Kernel and making 'a' uniformally distributed
-	os.system('python juliet.py -lcfile Simulations/' + name[i] + '/data/' + name[i] + '_lc.dat' + ' -lceparamfile Simulations/' + name[i] + '/data/' + name[i] + '_lceparam.dat -ldlaw TESS-quadratic -lctimedef TESS-TDB -priorfile Simulations/' + name[i] + '/priors/' + name[i] + '_priors_qp1.dat -ofolder Simulations/' + name[i] + '/results/qp1 -nlive 500')#Ran simulation with QP Kernel and making 'a' uniformally distributed
+	os.system('python juliet3.py -lcfile Simulations/' + name[i] + '/data/' + name[i] + '_lc.dat' + ' -lceparamfile Simulations/' + name[i] + '/data/' + name[i] + '_lceparam.dat -ldlaw TESS-quadratic -lctimedef TESS-TDB -priorfile Simulations/' + name[i] + '/priors/' + name[i] + '_priors_exm.dat -ofolder Simulations/' + name[i] + '/results/exm -nlive 500')#Ran simulation with Ex-M Kernel
+	os.system('python juliet3.py -lcfile Simulations/' + name[i] + '/data/' + name[i] + '_lc.dat' + ' -lceparamfile Simulations/' + name[i] + '/data/' + name[i] + '_lceparam.dat -ldlaw TESS-quadratic -lctimedef TESS-TDB -priorfile Simulations/' + name[i] + '/priors/' + name[i] + '_priors_qp.dat -ofolder Simulations/' + name[i] + '/results/qp -nlive 500')#Ran simulation with QP Kernel
+	os.system('python juliet3.py -lcfile Simulations/' + name[i] + '/data/' + name[i] + '_lc.dat' + ' -lceparamfile Simulations/' + name[i] + '/data/' + name[i] + '_lceparam.dat -ldlaw TESS-quadratic -lctimedef TESS-TDB -priorfile Simulations/' + name[i] + '/priors/' + name[i] + '_priors_exm1.dat -ofolder Simulations/' + name[i] + '/results/exm1 -nlive 500')#Ran simulation with Ex-M Kernel and making 'a' uniformally distributed
+	os.system('python juliet3.py -lcfile Simulations/' + name[i] + '/data/' + name[i] + '_lc.dat' + ' -lceparamfile Simulations/' + name[i] + '/data/' + name[i] + '_lceparam.dat -ldlaw TESS-quadratic -lctimedef TESS-TDB -priorfile Simulations/' + name[i] + '/priors/' + name[i] + '_priors_qp1.dat -ofolder Simulations/' + name[i] + '/results/qp1 -nlive 500')#Ran simulation with QP Kernel and making 'a' uniformally distributed
 	#--------------------------------------
 	#----Starting Limb-Darkening Code------
 	#--------------------------------------
@@ -463,7 +461,11 @@ f9.close()
 f19.close()
 f11.close()
 f10.close()
+f_data.close()
 
+name2 = np.loadtxt('data2.dat', dtype = str, usecols = 0, unpack = True)
+teff2, lg2, mh2, vturb2, p2, pperr2, pnerr2, tc2, aste2, asteperr2, astenerr2, ecc2, ome2, rprst2, rprstperr2, rprstnerr2, tce2 = np.loadtxt('data2.dat', usecols = (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17), unpack = True)
+ra2, dec2 = np.loadtxt('data2.dat', dtype = str, usecols = (18,19), unpack = True)
 
 #--------------------------------------------------------------------------------------------------
 #----------------Calculating Limiting LDCs from ATLAS (Code)---------------------------------------
@@ -505,7 +507,7 @@ f22.close()
 
 fig_teff = plt.figure()
 x_teff = np.arange(0, len(name), 1)
-plt.errorbar(name, teff, fmt='o', mfc = 'white')
+plt.errorbar(name2, teff2, fmt='o', mfc = 'white')
 plt.xticks(x_teff, rotation = 67.5, fontsize = 4)
 plt.ylabel('Effective temperature of stellar host')
 plt.grid()
@@ -514,7 +516,7 @@ plt.close(fig_teff)
 
 fig_gr = plt.figure()
 x_gr = np.arange(0, len(name), 1)
-plt.errorbar(name, lg, fmt = 'o', mfc = 'white')
+plt.errorbar(name2, lg2, fmt = 'o', mfc = 'white')
 plt.xticks(x_gr, rotation = 67.5, fontsize = 4)
 plt.ylabel('Surface gravity (log(g)) of stellar host')
 plt.grid()
@@ -523,7 +525,7 @@ plt.close(fig_gr)
 
 fig_mh = plt.figure()
 x_mh = np.arange(0, len(name), 1)
-plt.errorbar(name, mh, fmt = 'o', mfc = 'white')
+plt.errorbar(name2, mh2, fmt = 'o', mfc = 'white')
 plt.xticks(x_mh, rotation = 67.5, fontsize = 4)
 plt.ylabel('Metallicity ([Fe/H]) of stellar host')
 plt.grid()
@@ -534,12 +536,12 @@ plt.close(fig_mh)
 #----------------Plots to check how good was the fit----------------------
 #-------------------------------------------------------------------------
 
-amax_t = np.max(aste)
-pmax_t = np.max(p)
-rmax_t = np.max(rprst)
-amin_t = np.min(aste)
-pmin_t = np.min(p)
-rmin_t = np.min(rprst)
+amax_t = np.max(aste2)
+pmax_t = np.max(p2)
+rmax_t = np.max(rprst2)
+amin_t = np.min(aste2)
+pmin_t = np.min(p2)
+rmin_t = np.min(rprst2)
 
 #------------------------------------------------
 #-----------------For a/R*-----------------------
@@ -560,7 +562,7 @@ diff_a = np.array([])
 diff_ae = np.array([])
 
 for i in range(len(a_j)):
-	at1 = np.random.normal(aste[i],asteperr[i],10000)
+	at1 = np.random.normal(aste2[i],asteperr2[i],10000)
 	ac1 = np.random.normal(a_j[i], a_jp[i], 10000)
 	diff1 = at1 - ac1
 	am1 = np.median(diff1)
@@ -573,7 +575,7 @@ gs_a = gd.GridSpec(2, 1, height_ratios = [4,1])
 
 ax_a = plt.subplot(gs_a[0])
 
-ax_a.errorbar(aste, a_j, xerr = [astenerr, asteperr], yerr = [a_jn, a_jp], fmt = 'o', mfc='white')
+ax_a.errorbar(aste2, a_j, xerr = [astenerr2, asteperr2], yerr = [a_jn, a_jp], fmt = 'o', mfc='white')
 
 plt.xlim([xla_j, xua_j])
 plt.ylim([xla_j, xua_j])
@@ -584,7 +586,7 @@ plt.title('Comparison between literature values and calculated values of a/R*')
 
 ax1_a = plt.subplot(gs_a[1], sharex = ax_a)
 
-ax1_a.errorbar(aste, diff_a, xerr = [astenerr, asteperr], yerr = diff_ae, fmt = 'o', mfc='white')
+ax1_a.errorbar(aste2, diff_a, xerr = [astenerr2, asteperr2], yerr = diff_ae, fmt = 'o', mfc='white')
 
 plt.xlim([xla_j, xua_j])
 plt.ylim([-5,5])
@@ -597,14 +599,14 @@ plt.subplots_adjust(hspace = 0.2)
 plt.savefig(path1 + '/Results/comp_a_r_p/a.pdf')
 
 diff_a1 = np.abs(diff_a)
-erra1 = 3*(asteperr + a_jp)
+erra1 = 3*(asteperr2 + a_jp)
 
 fa = open(path1 + '/Results/comp_a_r_p/off_a.dat', 'w')
 fa.write('#These are the systems which have residulas larger than 3-sigma\n')
 
 for i in range(len(diff_a)):
 	if diff_a1[i] > erra1[i]:
-		fa.write(name[i] + '\n')
+		fa.write(name2[i] + '\n')
 
 fa.close()
 plt.close(fig_a)
@@ -628,7 +630,7 @@ diff_p = np.array([])
 diff_pe = np.array([])
 
 for i in range(len(p_j)):
-	pt1 = np.random.normal(p[i],pperr[i],10000)
+	pt1 = np.random.normal(p2[i],pperr2[i],10000)
 	pc1 = np.random.normal(p_j[i], p_jp[i], 10000)
 	diff1 = (pt1 - pc1)*86400
 	pm1 = np.median(diff1)
@@ -641,7 +643,7 @@ gs_p = gd.GridSpec(2, 1, height_ratios = [4,1])
 
 ax_p = plt.subplot(gs_p[0])
 
-ax_p.errorbar(p, p_j, xerr = [pnerr, pperr], yerr = [p_jn, p_jp], fmt = 'o', mfc='white')
+ax_p.errorbar(p2, p_j, xerr = [pnerr2, pperr2], yerr = [p_jn, p_jp], fmt = 'o', mfc='white')
 
 plt.xlim([xlp_j, xup_j])
 plt.ylim([xlp_j, xup_j])
@@ -653,7 +655,7 @@ plt.title('Comparison between literature values and calculated values of period'
 
 ax1_p = plt.subplot(gs_p[1], sharex = ax_p)
 
-ax1_p.errorbar(p, diff_p, xerr = [pnerr, pperr], yerr = diff_pe, fmt = 'o', mfc='white')
+ax1_p.errorbar(p2, diff_p, xerr = [pnerr2, pperr2], yerr = diff_pe, fmt = 'o', mfc='white')
 
 plt.xlim([xlp_j, xup_j])
 plt.ylim([-30,30])
@@ -666,14 +668,14 @@ plt.subplots_adjust(hspace = 0.2)
 plt.savefig(path1 + '/Results/comp_a_r_p/period.pdf')
 
 diff_p1 = np.abs(diff_p)
-errp1 = 3*(pperr + p_jp)*86400
+errp1 = 3*(pperr2 + p_jp)*86400
 
 fp = open(path1 + '/Results/comp_a_r_p/off_p.dat', 'w')
 fp.write('These are the systems which have residulas larger than 3-sigma\n')
 
 for i in range(len(diff_p)):
 	if diff_p1[i] > errp1[i]:
-		fp.write(name[i] + '\n')
+		fp.write(name2[i] + '\n')
 
 fp.close()
 plt.close(fig_p)
@@ -697,7 +699,7 @@ diff_r = np.array([])
 diff_re = np.array([])
 
 for i in range(len(r_j)):
-	rt1 = np.random.normal(rprst[i],rprstperr[i],10000)
+	rt1 = np.random.normal(rprst2[i],rprstperr2[i],10000)
 	rc1 = np.random.normal(r_j[i], r_jp[i], 10000)
 	diff1 = rt1 - rc1
 	rm1 = np.median(diff1)
@@ -710,7 +712,7 @@ gs_r = gd.GridSpec(2, 1, height_ratios = [4,1])
 
 ax_r = plt.subplot(gs_r[0])
 
-ax_r.errorbar(rprst, r_j, xerr = [rprstnerr, rprstperr], yerr = [r_jn, r_jp], fmt = 'o', mfc = 'white')
+ax_r.errorbar(rprst2, r_j, xerr = [rprstnerr2, rprstperr2], yerr = [r_jn, r_jp], fmt = 'o', mfc = 'white')
 
 plt.xlim([xlr_j, xur_j])
 plt.ylim([xlr_j, xur_j])
@@ -722,7 +724,7 @@ plt.title('Comparison between literature values and calculated values of Rp/R*')
 
 ax1_r = plt.subplot(gs_r[1], sharex = ax_r)
 
-ax1_r.errorbar(rprst, diff_r, xerr = [rprstnerr, rprstperr], yerr = diff_re, fmt = 'o', mfc = 'white')
+ax1_r.errorbar(rprst2, diff_r, xerr = [rprstnerr2, rprstperr2], yerr = diff_re, fmt = 'o', mfc = 'white')
 
 plt.xlim([xlr_j, xur_j])
 plt.ylim([-0.20,0.10])
@@ -735,14 +737,14 @@ plt.subplots_adjust(hspace = 0.2)
 plt.savefig(path1 + '/Results/comp_a_r_p/r.pdf')
 
 diff_r1 = np.abs(diff_r)
-errr1 = 3*(rprstperr + r_jp)
+errr1 = 3*(rprstperr2 + r_jp)
 
 fr = open(path1 + '/Results/comp_a_r_p/off_r.dat', 'w')
 fr.write('These are the systems which have residulas larger than 3-sigma\n')
 
 for i in range(len(diff_r)):
 	if diff_r1[i] > errr1[i]:
-		fr.write(name[i]+ '\n')
+		fr.write(name2[i]+ '\n')
 
 fr.close()
 plt.close(fig_r)
@@ -815,7 +817,7 @@ ft.write('These are the systems which have residulas larger than 3-sigma\n')
 
 for i in range(len(diff_t)):
 	if diff_t1[i] > errt1[i]:
-		ft.write(name[i] + '\n')
+		ft.write(name2[i] + '\n')
 
 ft.close()
 plt.close(fig_t)
@@ -1287,8 +1289,8 @@ f101.close()
 #-------------------------------Plots of LDCs with temperature variation---------------------------
 #--------------------------------------------------------------------------------------------------
 
-tmin = np.min(teff)
-tmax = np.max(teff)
+tmin = np.min(teff2)
+tmax = np.max(teff2)
 
 x = np.linspace(tmin, tmax, 100)
 y = np.zeros(len(x))
@@ -1299,10 +1301,10 @@ y = np.zeros(len(x))
 
 fig1 = plt.figure()
 
-plt.fill_between(teff, med1 + std1, med1 - std1, color = 'red', alpha = 0.5)
-plt.errorbar(teff, diff_u1_c_p, yerr = [u1_jn, u1_jp], fmt = 'o', mfc = 'white', color = 'red', label = 'PHOENIX LDCs')
-plt.fill_between(teff, med3 + std3, med3 - std3, color = 'blue', alpha = 0.5)
-plt.errorbar(teff, diff_u1_c_a, yerr = [u1_jn, u1_jp], fmt = 'o', mfc = 'white', color = 'blue', label = 'ATLAS LDCs')
+plt.fill_between(teff2, med1 + std1, med1 - std1, color = 'red', alpha = 0.5)
+plt.errorbar(teff2, diff_u1_c_p, yerr = [u1_jn, u1_jp], fmt = 'o', mfc = 'white', color = 'red', label = 'PHOENIX LDCs')
+plt.fill_between(teff2, med3 + std3, med3 - std3, color = 'blue', alpha = 0.5)
+plt.errorbar(teff2, diff_u1_c_a, yerr = [u1_jn, u1_jp], fmt = 'o', mfc = 'white', color = 'blue', label = 'ATLAS LDCs')
 
 plt.plot(x, y, 'k--')
 plt.grid()
@@ -1318,10 +1320,10 @@ plt.close(fig1)
 
 fig2 = plt.figure()
 
-plt.fill_between(teff, med2 + std2, med2 - std2, color = 'red', alpha = 0.5)
-plt.errorbar(teff, diff_u2_c_p, yerr = [u2_jn, u2_jp], fmt = 'o', mfc = 'white', color = 'red', label = 'PHOENIX LDCs')
-plt.fill_between(teff, med4 + std4, med4 - std4, color = 'blue', alpha = 0.5)
-plt.errorbar(teff, diff_u2_c_a, yerr = [u2_jn, u2_jp], fmt = 'o', mfc = 'white', color = 'blue', label = 'ATLAS LDCs')
+plt.fill_between(teff2, med2 + std2, med2 - std2, color = 'red', alpha = 0.5)
+plt.errorbar(teff2, diff_u2_c_p, yerr = [u2_jn, u2_jp], fmt = 'o', mfc = 'white', color = 'red', label = 'PHOENIX LDCs')
+plt.fill_between(teff2, med4 + std4, med4 - std4, color = 'blue', alpha = 0.5)
+plt.errorbar(teff2, diff_u2_c_a, yerr = [u2_jn, u2_jp], fmt = 'o', mfc = 'white', color = 'blue', label = 'ATLAS LDCs')
 
 plt.plot(x, y, 'k--')
 plt.grid()
@@ -1337,10 +1339,10 @@ plt.close(fig2)
 
 fig5 = plt.figure()
 
-plt.fill_between(teff, med5 + std5, med5 - std5, color = 'red', alpha = 0.5)
-plt.errorbar(teff, diff_u1_co_p, yerr = [u1_jn, u1_jp], fmt = 'o', mfc = 'white', color = 'red', label = 'PHOENIX LDCs')
-plt.fill_between(teff, med7 + std7, med7 - std7, color = 'blue', alpha = 0.5)
-plt.errorbar(teff, diff_u1_co_a, yerr = [u1_jn, u1_jp], fmt = 'o', mfc = 'white', color = 'blue', label = 'ATLAS LDCs')
+plt.fill_between(teff2, med5 + std5, med5 - std5, color = 'red', alpha = 0.5)
+plt.errorbar(teff2, diff_u1_co_p, yerr = [u1_jn, u1_jp], fmt = 'o', mfc = 'white', color = 'red', label = 'PHOENIX LDCs')
+plt.fill_between(teff2, med7 + std7, med7 - std7, color = 'blue', alpha = 0.5)
+plt.errorbar(teff2, diff_u1_co_a, yerr = [u1_jn, u1_jp], fmt = 'o', mfc = 'white', color = 'blue', label = 'ATLAS LDCs')
 
 plt.plot(x, y, 'k--')
 plt.grid()
@@ -1356,10 +1358,10 @@ plt.close(fig5)
 
 fig6 = plt.figure()
 
-plt.fill_between(teff, med6 + std6, med6 - std6, color = 'red', alpha = 0.5)
-plt.errorbar(teff, diff_u2_co_p, yerr = [u2_jn, u2_jp], fmt = 'o', mfc = 'white', color = 'red', label = 'PHOENIX LDCs')
-plt.fill_between(teff, med7 + std7, med7 - std7, color = 'blue', alpha = 0.5)
-plt.errorbar(teff, diff_u2_co_a, yerr = [u2_jn, u2_jp], fmt = 'o', mfc = 'white', color = 'blue', label = 'ATLAS LDCs')
+plt.fill_between(teff2, med6 + std6, med6 - std6, color = 'red', alpha = 0.5)
+plt.errorbar(teff2, diff_u2_co_p, yerr = [u2_jn, u2_jp], fmt = 'o', mfc = 'white', color = 'red', label = 'PHOENIX LDCs')
+plt.fill_between(teff2, med7 + std7, med7 - std7, color = 'blue', alpha = 0.5)
+plt.errorbar(teff2, diff_u2_co_a, yerr = [u2_jn, u2_jp], fmt = 'o', mfc = 'white', color = 'blue', label = 'ATLAS LDCs')
 
 plt.plot(x, y, 'k--')
 plt.grid()
