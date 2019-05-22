@@ -3,6 +3,28 @@ import os
 
 #---------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------
+
+
+def new_dir(path):
+	os.system('mkdir ' + '-p' + ' ' + path)
+	return
+
+def copy_file(in_path, fi_name, out_path):
+	if not os.path.exists(out_path):
+		new_dir(out_path)
+	os.system('cp ' + in_path + fi_name + ' ' + out_path)
+	return
+
+def move_file(in_path, fi_name, out_path, new_name):
+	if not os.path.exists(out_path):
+		new_dir(out_path)
+	os.system('mv ' + in_path + fi_name + ' ' + out_path + new_name)
+	#os.system('rm ' + in_path + fi_name)
+	return
+
+#---------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------
 #------------------This Function is taken from the 'Exotoolbox' by ---------------------------
 #--------------------------------Dr Nestor Espinoza-------------------------------------------
 #---------------------------------------------------------------------------------------------
@@ -56,24 +78,23 @@ def reverse_ld_coeffs(ld_law, q1, q2):
         return q1,0.
     return coeff1,coeff2
 
-#---------------------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------------------
+def RA_to_deg(coords):
+    """
+    Given a RA string in hours (e.g., '11:12:12.11'), returns the corresponding 
+    coordinate in degrees.
+    """
+    hh,mm,ss = coords.split(':')
 
+    hours = np.double(hh) + np.double(mm)/60. + np.double(ss)/3600.
+    return hours * 360./24.
 
-def new_dir(path):
-	os.system('mkdir ' + '-p' + ' ' + path)
-	return
-
-def copy_file(in_path, fi_name, out_path):
-	if not os.path.exists(out_path):
-		new_dir(out_path)
-	os.system('cp ' + in_path + fi_name + ' ' + out_path)
-	return
-
-def move_file(in_path, fi_name, out_path, new_name):
-	if not os.path.exists(out_path):
-		new_dir(out_path)
-	os.system('mv ' + in_path + fi_name + ' ' + out_path + new_name)
-	#os.system('rm ' + in_path + fi_name)
-	return
+def DEC_to_deg(coords):
+    """
+    Given a DEC string in degrees (e.g., '-30:12:12.11'), returns the corresponding 
+    coordinate in degrees.
+    """
+    dd,mm,ss = coords.split(':')
+    if dd[0] == '-':
+        return np.double(dd) - np.double(mm)/60. - np.double(ss)/3600.
+    else:
+        return np.double(dd) + np.double(mm)/60. + np.double(ss)/3600.
