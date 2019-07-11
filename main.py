@@ -125,6 +125,7 @@ for i in range(len(teff)):
 		try:
 			d = tab['Local Path'][int(c1)]
 		except:
+			os.system('rm -r mastDownload')
 			continue
 		os.system('mv ' + path1 + d[1:] + ' ' + path1 + '/Light-curve/' + name[i] + '_sector' + str(i11) + '.fits')
 		os.system('rm -r mastDownload')
