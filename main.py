@@ -768,9 +768,32 @@ plt.close(fig_r)
 #------------------------------------------------
 #----------------For Tc--------------------------
 #------------------------------------------------
-tc_t, tc_te = np.loadtxt(path1 + '/Results/comp_a_r_p/to_the.dat', usecols = (1,2), unpack = True)
+tc_t1, tc_te1 = np.loadtxt(path1 + '/Results/comp_a_r_p/to_the.dat', usecols = (1,2), unpack = True)
 
-tc_j, tc_jp, tc_jn = np.loadtxt(path1 + '/Results/comp_a_r_p/tc.dat', usecols = (1,2,3), unpack = True)
+tc_t = np.array([])
+tc_te = np.array([])
+
+for i in range(len(tc_t1)):
+	t1 = np.random.normal(tc_t1[i], tc_te1[i], 10000)
+	t2 = t1 - 2457000
+	t3 = np.median(t2)
+	t4 = np.std(t2)
+	tc_t = np.hstack((tc_t,t3))
+	tc_te = np.hstack((tc_te,t4))
+
+tc_j1, tc_jp1, tc_jn1 = np.loadtxt(path1 + '/Results/comp_a_r_p/tc.dat', usecols = (1,2,3), unpack = True)
+
+tc_j = np.array([])
+tc_jp = np.array([])
+tc_jn = tc_jn1
+
+for i in range(len(tc_j1)):
+	t5 = np.random.normal(tc_j1[i], tc_jp1[i], 10000)
+	t6 = t5 - 2457000
+	t7 = np.median(t6)
+	t8 = np.std(t6)
+	tc_j = np.hstack((tc_j,t7))
+	tc_jp = np.hstack((tc_jp,t8))
 
 tmax_t = np.max(tc_t)
 tmin_t = np.min(tc_t)
@@ -787,29 +810,28 @@ y11t = np.zeros(len(x1t))
 diff_t = np.array([])
 diff_te = np.array([])
 
-for i in range(len(p_j)):
+for i in range(len(tc_j)):
 	tt1 = np.random.normal(tc_t[i],tc_te[i],10000)
 	tc1 = np.random.normal(tc_j[i], tc_jp[i], 10000)
-	diff1 = (tt1 - tc1)*86400
+	diff1 = (tt1 - tc1)*1440
 	tm1 = np.median(diff1)
 	te1 = np.std(diff1)
 	diff_t = np.hstack((diff_t,tm1))
 	diff_te = np.hstack((diff_te,te1))
-
 
 fig_t = plt.figure(figsize = (8,10))
 gs_t = gd.GridSpec(2, 1, height_ratios = [4,1])
 
 ax_t = plt.subplot(gs_t[0])
 
-ax_t.errorbar(tc_t - 2458000, tc_j - 2458000, xerr = tc_te, yerr = [tc_jn, tc_jp], fmt = 'o', mfc = 'white')
+ax_t.errorbar(tc_t, tc_j, xerr = tc_te, yerr = [tc_jn, tc_jp], fmt = 'o', mfc = 'white')
 
 plt.xlim([xlt_j, xut_j])
 plt.ylim([xlt_j, xut_j])
-ax_t.plot(x1t - 2458000, y11t - 2458000, 'k--')
+ax_t.plot(x1t, y1t, 'k--')
 ax_t.grid()
 
-plt.ylabel('Values of Tc calculated from juliet (in days, T(bjd) - 2458000)')
+plt.ylabel('Values of Tc calculated from juliet (in TJD)')
 plt.title('Comparison between literature values and calculated values of Tc')
 
 ax1_t = plt.subplot(gs_t[1], sharex = ax_t)
@@ -818,26 +840,26 @@ ax1_t.errorbar(tc_t, diff_t, xerr = tc_te, yerr = diff_te, fmt = 'o', mfc = 'whi
 
 plt.xlim([xlt_j, xut_j])
 #plt.ylim([-30,30])
-ax1_t.plot(x1p, y11p, 'k--')
+ax1_t.plot(x1t, y11t, 'k--')
 ax1_t.grid()
-plt.ylabel('Residuals')
-plt.xlabel('Values of Tc taken from literature (in days, T(bjd) - 2458000)')
+plt.ylabel('Residuals (s)')
+plt.xlabel('Values of Tc taken from literature')
 
 plt.subplots_adjust(hspace = 0.2)
 plt.savefig(path1 + '/Results/comp_a_r_p/tc.pdf')
+plt.close(fig_t)
 
 diff_t1 = np.abs(diff_t)
-errt1 = 3*(tc_te + tc_jp)*86400
+errt1 = 3*(tc_te + tc_jp)*1440
 
 ft = open(path1 + '/Results/comp_a_r_p/off_t.dat', 'w')
 ft.write('These are the systems which have residulas larger than 3-sigma\n')
 
 for i in range(len(diff_t)):
 	if diff_t1[i] > errt1[i]:
-		ft.write(name2[i] + '\n')
+		ft.write(name[i] + '\n')
 
 ft.close()
-plt.close(fig_t)
 
 #-------------------------------------------------------------------------
 #-------------------------Plots to compare LDCs---------------------------
