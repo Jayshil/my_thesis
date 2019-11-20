@@ -1,5 +1,5 @@
 # my_thesis
-This repository contains the code we used in our work for my Master's thesis and our paper.
+This repository contains the code we used in our work for my Master's thesis and our paper. This is an interfacec among various packages to make things autometic.
 
 This project used some of the codes that I mentioned below:
 
@@ -18,3 +18,5 @@ To confirm that our fit is indeed good, we also compare several planetary parame
 This code will do all these things autometically. But to do this you have to provide a data file of the targets. This file should contains various planetary as well as stellar parameters. collecting_data.py file can help in doing this.
 
 To run this code you only need to run main.py file and provide the path of this file to the code upon asking.
+
+In this second version of code, you can now do the analysis of targets which were observed by TESS in more than one sector.
