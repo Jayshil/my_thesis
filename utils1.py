@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import re
 
 #---------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------
@@ -98,3 +99,17 @@ def DEC_to_deg(coords):
         return np.double(dd) - np.double(mm)/60. - np.double(ss)/3600.
     else:
         return np.double(dd) + np.double(mm)/60. + np.double(ss)/3600.
+
+#------------------------------------------------------------------------------------------
+#-------------------------------Natural Sorting--------------------------------------------
+#------------------------------------------------------------------------------------------
+def atoi(text):
+    return int(text) if text.isdigit() else text
+
+def natural_keys(text):
+    '''
+    alist.sort(key=natural_keys) sorts in human order
+    http://nedbatchelder.com/blog/200712/human_sorting.html
+    (See Toothy's implementation in the comments)
+    '''
+    return [ atoi(c) for c in re.split(r'(\d+)', text) ]
