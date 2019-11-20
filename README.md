@@ -1,5 +1,5 @@
 # my_thesis
-This repository contains the code we used in our work for my Master's thesis and our paper. This is an interfacec among various packages to make things autometic.
+This repository contains the code we used in our work for my Master's thesis and our paper. This is an interface among various packages to make things autometic.
 
 This project used some of the codes that I mentioned below:
 
