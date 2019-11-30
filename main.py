@@ -420,12 +420,12 @@ for i in range(len(name2)):
 	#------------------------------
 	#--------- For Tc--------------
 	#------------------------------
-	tc_bjd1 = np.loadtxt(path1 + '/Simulations/' + name2[i] + '/' + sec_list[0] + '/data/' + sec_list[0] + '_lc.dat', dtype = str, usecols = 0, unpack = True)
+	tc_bjd1 = np.loadtxt(path1 + '/Simulations/' + name2[i] + '/' + sec_list[0] + '/data/' + sec_list[0] + '_lc.dat', usecols = 0, unpack = True)
 	phase_to = (tc_bjd1 - tc2[i])/p2[i]
 	phase1_to = int(phase_to[0])+1
 	tc1 = np.random.normal(tc2[i], tce2[i], 10000)
 	p11 = np.random.normal(p2[i], pperr2[i], 10000)
-	t11 = tc1 + (phase1_to * p11)
+	t11 = tc2 + (phase1_to * p11)
 	t0_m = np.median(t11)
 	t0_s = np.std(t11)
 	f1_to.write(name2[i] + '\t' + str(t0_m) + '\t' + str(t0_s) + '\n')
