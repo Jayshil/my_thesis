@@ -4,6 +4,7 @@ from matplotlib import gridspec as gd
 import os
 import pickle as pc
 import utils1 as utl
+from exotoolbox import utils
 from astropy.io import fits
 from astroquery.mast import Observations as obs
 from scipy import interpolate as inp
@@ -104,8 +105,8 @@ for i in range(len(teff)):
 	print('----------------------------------------------------------------')
 	print('---------------Working on '+ name[i]+' -------')
 	print('----------------------------------------------------------------')
-	ra1 = utl.RA_to_deg(ra[i])
-	dec1 = utl.DEC_to_deg(dec[i])
+	ra1 = utils.RA_to_deg(ra[i])
+	dec1 = utils.DEC_to_deg(dec[i])
 	coord = str(ra1) + ' ' + str(dec1)
 	obt = obs.query_region(coord,radius=0.001)
 	b = np.array([])
@@ -344,33 +345,23 @@ for i in range(len(name2)):
 	u1_tem = []
 	u2_tem = []
 	for j in range(len(sec_list)):
-		post_exm = pc.load(open(path1 + '/Simulations/' + name2[i] + '/' + sec_list[j] + '/results/exm/posteriors.pkl', 'rb'), encoding = 'latin1')
-		post_qp = pc.load(open(path1 + '/Simulations/' + name2[i] + '/' + sec_list[j] + '/results/qp/posteriors.pkl', 'rb'), encoding = 'latin1')
 		post_exm1 = pc.load(open(path1 + '/Simulations/' + name2[i] + '/' + sec_list[j] + '/results/exm1/posteriors.pkl', 'rb'), encoding = 'latin1')
 		post_qp1 = pc.load(open(path1 + '/Simulations/' + name2[i] + '/' + sec_list[j] + '/results/qp1/posteriors.pkl', 'rb'), encoding = 'latin1')
-		lnze = post_exm['lnZ']
 		lnze1 = post_exm1['lnZ']
-		lnzqp = post_qp['lnZ']
 		lnzqp1 = post_qp1['lnZ']
-		evid = np.array([lnze,lnze1,lnzqp,lnzqp1])
-		max_evi = np.max(evid)
-		mo = np.where(evid==max_evi)
-		if mo[0][0] == 0:
-			model = 'exm'
-		elif mo[0][0] == 1:
+		mo1 = np.maximum(lnze1,lnzqp1)
+		if lnze1 == mo1:
 			model = 'exm1'
-		elif mo[0][0] == 2:
-			model = 'qp'
-		elif mo[0][0] == 3:
+		elif lnzqp1 == mo1:
 			model = 'qp1'
 		post_best = pc.load(open(path1 + '/Simulations/' + name2[i] + '/' + sec_list[j] + '/results/' + model + '/posteriors.pkl', 'rb'), encoding = 'latin1')
 		pbe = post_best['posterior_samples']
 		ast_tem.append(pbe['a_p1'])
 		per_tem.append(pbe['P_p1'])
 		tc_tem.append(pbe['t0_p1'])
-		bex, p11 = util.convert_bp(pbe['r1_p1'], pbe['r2_p1'], post_best['pl'], post_best['pu'])
+		bex, p11 = utils.convert_bp(pbe['r1_p1'], pbe['r2_p1'], post_best['pl'], post_best['pu'])
 		rp_tem.append(p11)
-		u11, u22 = util.reverse_ld_coeffs('quadratic', pbe['q1_TESS'], pbe['q2_TESS'])
+		u11, u22 = utils.reverse_ld_coeffs('quadratic', pbe['q1_TESS'], pbe['q2_TESS'])
 		u1_tem.append(u11)
 		u2_tem.append(u22)
 	length = np.array([])
