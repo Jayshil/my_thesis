@@ -313,7 +313,7 @@ for i in range(len(teff)):
 	f_data.write(name[i] + '\t' + str(teff[i]) + '\t' + str(lg[i]) + '\t' + str(mh[i]) + '\t' + str(vturb[i]) + '\t' + str(p[i]) + '\t' + str(pperr[i]) + '\t' + str(pnerr[i]) + '\t' + str(tc[i]) + '\t' + str(aste[i]) + '\t' + str(asteperr[i]) + '\t' + str(astenerr[i]) + '\t' + str(ecc[i]) + '\t' + str(ome[i]) + '\t' + str(rprst[i]) + '\t' + str(rprstperr[i]) + '\t' + str(rprstnerr[i]) + '\t' + str(tce[i]) + '\t' + ra[i] + '\t' + dec[i] + '\n')
 	print('******************************************************************************************')
 	print('                                                                                          ')
-	print('Completed analysis for ' + str(i+1) + 'system(s) / out of ' + str(len(name)) + ' systems\n')
+	print('Completed analysis for ' + str(i+1) + ' system(s) / out of ' + str(len(name)) + ' systems\n')
 	print('                                                                                          ')
 	print('******************************************************************************************')
 
@@ -416,7 +416,7 @@ for i in range(len(name2)):
 	phase1_to = int(phase_to[0])+1
 	tc1 = np.random.normal(tc2[i], tce2[i], 10000)
 	p11 = np.random.normal(p2[i], pperr2[i], 10000)
-	t11 = tc2 + (phase1_to * p11)
+	t11 = tc2[i] + (phase1_to * p11)
 	t0_m = np.median(t11)
 	t0_s = np.std(t11)
 	f1_to.write(name2[i] + '\t' + str(t0_m) + '\t' + str(t0_s) + '\n')
@@ -446,7 +446,7 @@ for i in range(len(name2)):
 	f19.write(name2[i] + '\t' + str(np.median(u1_fin)) + '\t' + str(np.std(u1_fin)) + '\t' + str(np.std(u1_fin)) + '\t' + str(np.median(u2_fin)) + '\t' + str(np.std(u2_fin)) + '\t' + str(np.std(u2_fin)) + '\n')
 	print('*****************************************************************************************')
 	print('                                                                                         ')
-	print('Retrieved values for ' + str(i+1) + 'system(s) / out of ' + str(len(name2)) + ' systems\n')
+	print('Retrieved values for ' + str(i+1) + ' system(s) / out of ' + str(len(name2)) + ' systems\n')
 	print('                                                                                         ')
 	print('*****************************************************************************************')
 
@@ -540,7 +540,7 @@ for i in range(len(name2)):
 	f4.write(name2[i] + '\t' + str(u1_a) + '\t' + str(u2_a) + '\n')
 	print('****************************************************************************************')
 	print('                                                                                        ')
-	print('Calculated LDCs for ' + str(i+1) + 'system(s) / out of ' + str(len(name2)) + ' systems\n')
+	print('Calculated LDCs for ' + str(i+1) + ' system(s) / out of ' + str(len(name2)) + ' systems\n')
 	print('                                                                                        ')
 	print('****************************************************************************************')
 
