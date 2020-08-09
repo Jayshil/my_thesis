@@ -83,7 +83,7 @@ ax_histy.set_xlabel('Number of stars')
 ax_histx.set_xlim(ax_scatter.get_xlim())
 ax_histy.set_ylim(ax_scatter.get_ylim())
 
-plt.savefig(path1 + '/Results1/stellar_prop/2.png')
+plt.savefig(path1 + '/Results/stellar_prop/2.png')
 plt.close(stellar_prop)
 
 
@@ -500,7 +500,7 @@ plt.ylabel('Count')
 plt.xlabel('Residuals')
 
 plt.subplots_adjust(hspace = 0.3)
-plt.savefig(path1 + '/Results1/New_cal/u1_cla.pdf')
+plt.savefig(path1 + '/Results/cal_us_and_evidance/u1_cla.pdf')
 plt.close(fig_u1_c_p)
 
 #-----------------------
@@ -572,7 +572,7 @@ plt.ylabel('Count')
 plt.xlabel('Residuals')
 
 plt.subplots_adjust(hspace = 0.3)
-plt.savefig(path1 + '/Results1/New_cal/u2_cla.pdf')
+plt.savefig(path1 + '/Results/cal_us_and_evidance/u2_cla.pdf')
 plt.close(fig_u2_c_p)
 
 #---------------------------------------------------------
@@ -662,7 +662,7 @@ plt.xlabel('Residuals')
 plt.ylabel('Count')
 
 plt.subplots_adjust(hspace = 0.3)
-plt.savefig(path1 + '/Results1/New_cal/u1_cla_r.pdf')
+plt.savefig(path1 + '/Results/cal_us_and_evidance/u1_cla_r.pdf')
 plt.close(fig_u1_c_pr)
 
 #-----------------------
@@ -734,7 +734,7 @@ plt.xlabel('Residuals')
 plt.ylabel('Count')
 
 plt.subplots_adjust(hspace = 0.3)
-plt.savefig(path1 + '/Results1/New_cal/u2_cla_r.pdf')
+plt.savefig(path1 + '/Results/cal_us_and_evidance/u2_cla_r.pdf')
 plt.close(fig_u2_c_pr)
 
 
@@ -825,7 +825,7 @@ plt.xlabel('Residuals')
 plt.ylabel('Count')
 
 plt.subplots_adjust(hspace = 0.3)
-plt.savefig(path1 + '/Results1/New_cal/u1_code.pdf')
+plt.savefig(path1 + '/Results/cal_us_and_evidance/u1_code.pdf')
 plt.close(fig_u1_co_p)
 
 #-----------------------
@@ -897,14 +897,14 @@ plt.xlabel('Residuals')
 plt.ylabel('Count')
 
 plt.subplots_adjust(hspace = 0.3)
-plt.savefig(path1 + '/Results1/New_cal/u2_code.pdf')
+plt.savefig(path1 + '/Results/cal_us_and_evidance/u2_code.pdf')
 plt.close(fig_u2_co_p)
 
 print('--------------------------------------------------------------------------------------------------')
 print('----------------------------Making Table of mean offset in LDCs-----------------------------------')
 print('--------------------------------------------------------------------------------------------------')
 
-f101 = open(path1 + '/Results1/mean_off1.dat', 'w')
+f101 = open(path1 + '/Results/mean_off.dat', 'w')
 
 print('-----------diff_u1_c_p')
 
@@ -1112,7 +1112,7 @@ plt.grid()
 plt.legend(loc='best')
 plt.ylabel('Residuals in u1 Claret(2017) LDCs')
 plt.xlabel('Effective Temperature')
-plt.savefig(path1 + '/Results1/New_temp/u1_cla_te.pdf')
+plt.savefig(path1 + '/Results/variation_with_temp/u1_cla_te.pdf')
 plt.close(fig1)
 
 #------------------------------------------------
@@ -1137,7 +1137,7 @@ plt.grid()
 plt.legend(loc='best')
 plt.ylabel('Residuals in u2 Claret(2017) LDCs')
 plt.xlabel('Effective Temperature')
-plt.savefig(path1 + '/Results1/New_temp/u2_cla_te.pdf')
+plt.savefig(path1 + '/Results/variation_with_temp/u2_cla_te.pdf')
 plt.close(fig2)
 
 #------------------------------------------------
@@ -1162,7 +1162,7 @@ plt.grid()
 plt.legend(loc='best')
 plt.ylabel('Residuals in u1 - Code LDCs')
 plt.xlabel('Effective Temperature')
-plt.savefig(path1 + '/Results1/New_temp/u1_code_te.pdf')
+plt.savefig(path1 + '/Results/variation_with_temp/u1_code_te.pdf')
 plt.close(fig5)
 
 #------------------------------------------------
@@ -1187,7 +1187,7 @@ plt.grid()
 plt.legend(loc='best')
 plt.ylabel('Residuals in u2 Code LDCs')
 plt.xlabel('Effective Temperature')
-plt.savefig(path1 + '/Results1/New_temp/u2_code_te.pdf')
+plt.savefig(path1 + '/Results/variation_with_temp/u2_code_te.pdf')
 plt.close(fig6)
 
 print("--------------------------------------------------------------------------------")
