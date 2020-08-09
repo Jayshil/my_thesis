@@ -30,11 +30,17 @@ os.system('mkdir ' + path1 + '/limb-darkening-master/results')
 #--------------------------------------------------------------------------------------------------
 #--------------------------------Claret (2017) PHOENIX LDCs----------------------------------------
 #--------------------------------------------------------------------------------------------------
-f1 = open(path1 + '/Phoenix/claret_us_nl_pho.dat','w')#---------------------Non-linear-------------
+f1 = open(path1 + '/Phoenix/claret_us_nl_pho.dat','w')#-------------------Non-linear-s-------------
 f1.write('#Name\t\tc1\t\t\tc2\t\t\tc3\t\t\tc4\n')
+
+f1r = open(path1 + '/Phoenix/claret_us_nl_pho_r.dat','w')#--------------------Non-linear-r------------
+f1r.write('#Name\t\tc1\t\t\tc2\t\t\tc3\t\t\tc4\n')
 
 f2 = open(path1 + '/Phoenix/claret_limiting_LDC_pho.dat','w')#-------------Limiting----------------
 f2.write('#Name\t\tu1\t\tu2\n')
+
+f2r = open(path1 + '/Phoenix/claret_limiting_LDC_pho_r.dat','w')#------------Limiting-r---------------
+f2r.write('#Name\t\tu1\t\tu2\n')
 
 #--------------------------------------------------------------------------------------------------
 #--------------------------------Claret (2017) ATLAS LDCs------------------------------------------
@@ -42,7 +48,7 @@ f2.write('#Name\t\tu1\t\tu2\n')
 f3 = open(path1 + '/Atlas/claret_us_nl_ata.dat','w')#---------------------Non-linear---------------
 f3.write('#Name\t\tc1\t\t\tc2\t\t\tc3\t\t\tc4\n')
 
-f4 = open(path1 + '/Atlas/claret_limiting_LDC_ata.dat','w')#-------------Limiting------------------
+f4 = open(path1 + '/Atlas/claret_limiting_LDC_ata.dat','w')##-------------Limiting------------------
 f4.write('#Name\t\tu1\t\tu2\n')
 
 #--------------------------------------------------------------------------------------------------
@@ -51,7 +57,7 @@ f4.write('#Name\t\tu1\t\tu2\n')
 f33 = open(path1 + '/Atlas/code_us_nl_ata.dat','w')#-------------------Non-linear------------------
 f33.write('#Name\t\tc1\t\t\tc2\t\t\tc3\t\t\tc4\n')
 
-f44 = open(path1 + '/Atlas/code_limiting_LDC_ata.dat','w')#-----------------Limiting---------------
+f44 = open(path1 + '/Atlas/code_limiting_LDC_ata.dat','w')##-----------------Limiting---------------
 f44.write('#Name\t\tu1\t\t\t\tu2\n')
 
 #--------------------------------------------------------------------------------------------------
@@ -82,6 +88,7 @@ f19 = open(path1 + '/Results/cal_us_and_evidance/cal_u1_u2.dat','w')
 f19.write('#Name\t\tu1\t\t\t+err\t\t\t-err\t\t\tu2\t\t\t+err\t\t\t-err\n')
 
 f1_to = open(path1 + '/Results/comp_a_r_p/to_the.dat', 'w')
+
 
 #---------------------------------------------------------------------------------------------
 #--------------------------Taking Data from the data file-------------------------------------
@@ -329,7 +336,7 @@ print('-------------------------------------------------------------------------
 
 name2 = np.loadtxt('data2.dat', dtype = str, usecols = 0, unpack = True)
 teff2, lg2, mh2, vturb2, p2, pperr2, pnerr2, tc2, aste2, asteperr2, astenerr2, ecc2, ome2, rprst2, rprstperr2, rprstnerr2, tce2 = np.loadtxt('data2.dat', usecols = (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17), unpack = True)
-ra2, dec2 = np.loadtxt('data2.dat', dtype = str, usecols = (18,19), unpack = True)
+#ra2, dec2 = np.loadtxt('data2.dat', dtype = str, usecols = (18,19), unpack = True)
 
 print('--------------------------------------------------------------------------------------------------------------------------')
 print('------------------------ Starting Second Iteration: To Retrieve Values of Various Parameters------------------------------')
@@ -508,7 +515,7 @@ for i in range(len(name2)):
 	u4_p = line1[int(ind1[5]+2):-1]
 	f11.write(name2[i] + '\t\t' + u1_p + '\t\t' + u2_p + '\t\t' + u3_p + '\t\t' + u4_p + '\n')
 	#--------------------------------------
-	#-----Calculating LDCs from PHOENIX----
+	#----Calculating LDCs from PHOENIX-s---
 	#--------from Claret(2017)-------------
 	#--------------------------------------
 	lg1_p, T1_p, q1_p, q2_p, q3_p, q4_p = np.loadtxt(path1 + '/Phoenix/pho_ldc_claret.dat', usecols=(0,1,4,5,6,7), unpack=True)
@@ -518,10 +525,25 @@ for i in range(len(name2)):
 	c2_p = inp.griddata(pt_p, q2_p, (lg2[i],teff2[i]), fill_value = 0, method = 'cubic')
 	c3_p = inp.griddata(pt_p, q3_p, (lg2[i],teff2[i]), fill_value = 0, method = 'cubic')
 	c4_p = inp.griddata(pt_p, q4_p, (lg2[i],teff2[i]), fill_value = 0, method = 'cubic')
-	f1.write(name2[i] + '\t' + str(c1_p) + '\t' + str(c2_p) + '\t' + str(c2_p) + '\t' + str(c2_p) + '\n')
+	f1.write(name2[i] + '\t' + str(c1_p) + '\t' + str(c2_p) + '\t' + str(c3_p) + '\t' + str(c4_p) + '\n')
 	u1_p = ((12*c1_p)/35) + c2_p + ((164*c3_p)/105) + (2*c4_p)
 	u2_p = ((10*c1_p)/31) - ((34*c3_p)/63) - c4_p
 	f2.write(name2[i] + '\t' + str(u1_p) + '\t' + str(u2_p) + '\n')
+	#--------------------------------------
+	#----Calculating LDCs from PHOENIX-r---
+	#--------from Claret(2017)-------------
+	#--------------------------------------
+	lg1_pr, T1_pr, q1_pr, q2_pr, q3_pr, q4_pr = np.loadtxt(path1 + '/Phoenix/pho_ldc_claret_r.dat', usecols=(0,1,4,5,6,7), unpack=True)
+	pts_pr = np.vstack((lg1_pr, T1_pr))
+	pt_pr = np.transpose(pts_pr)
+	c1_pr = inp.griddata(pt_pr, q1_pr, (lg2[i],teff2[i]), fill_value = 0, method = 'cubic')
+	c2_pr = inp.griddata(pt_pr, q2_pr, (lg2[i],teff2[i]), fill_value = 0, method = 'cubic')
+	c3_pr = inp.griddata(pt_pr, q3_pr, (lg2[i],teff2[i]), fill_value = 0, method = 'cubic')
+	c4_pr = inp.griddata(pt_pr, q4_pr, (lg2[i],teff2[i]), fill_value = 0, method = 'cubic')
+	f1r.write(name2[i] + '\t' + str(c1_pr) + '\t' + str(c2_pr) + '\t' + str(c3_pr) + '\t' + str(c4_pr) + '\n')
+	u1_pr = ((12*c1_pr)/35) + c2_pr + ((164*c3_pr)/105) + (2*c4_pr)
+	u2_pr = ((10*c1_pr)/31) - ((34*c3_pr)/63) - c4_pr
+	f2r.write(name2[i] + '\t' + str(u1_pr) + '\t' + str(u2_pr) + '\n')
 	#--------------------------------------
 	#-----Calculating LDCs from ATLAS------
 	#--------from Claret(2017)-------------
@@ -534,7 +556,7 @@ for i in range(len(name2)):
 	c2_a = inp.griddata(pt_a, q2_a, (lg2[i],teff2[i],mh2[i]), fill_value = 0, method = 'linear')
 	c3_a = inp.griddata(pt_a, q3_a, (lg2[i],teff2[i],mh2[i]), fill_value = 0, method = 'linear')
 	c4_a = inp.griddata(pt_a, q4_a, (lg2[i],teff2[i],mh2[i]), fill_value = 0, method = 'linear')
-	f3.write(name2[i] + '\t' + str(c1_a) + '\t' + str(c2_a) + '\t' + str(c2_a) + '\t' + str(c2_a) + '\n')
+	f3.write(name2[i] + '\t' + str(c1_a) + '\t' + str(c2_a) + '\t' + str(c3_a) + '\t' + str(c4_a) + '\n')
 	u1_a = ((12*c1_a)/35) + c2_a + ((164*c3_a)/105) + (2*c4_a)
 	u2_a = ((10*c1_a)/31) - ((34*c3_a)/63) - c4_a
 	f4.write(name2[i] + '\t' + str(u1_a) + '\t' + str(u2_a) + '\n')
@@ -547,6 +569,8 @@ for i in range(len(name2)):
 
 f1.close()
 f2.close()
+f1r.close()
+f2r.close()
 f3.close()
 f33.close()
 f4.close()
@@ -582,954 +606,11 @@ for i in range(len(name11)):
 
 f22.close()
 
-print('--------------------------------------------------------------------------------------------------------------------------')
-print('-----------------------------------------Now its time to plot some amazing results----------------------------------------')
-print('--------------------------------------------------------------------------------------------------------------------------')
-
-sns.set_context("talk")
-sns.set_style("ticks")
-
-# Fonts:
-rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
-rc('text', usetex=True)
-matplotlib.rcParams.update({'font.size':12})
-plt.rc('legend', **{'fontsize':12})
-
-# Ticks to the outside:
-rcParams['axes.linewidth'] = 1.2 
-rcParams['xtick.direction'] = 'out'
-rcParams['ytick.direction'] = 'out'
-
-
-#-------------------------------------------------------------------------
-print('---------------------Plotting Stellar Parameters-------------------------')
-#-------------------------------------------------------------------------
-
-fig_gr = plt.figure(figsize=(27,15.88))
-x_gr = np.arange(0, len(name2), 1)
-y_gr = np.arange(3.5,5.2,0.1)
-plt.errorbar(name2, lg2, fmt='o', elinewidth=1, alpha=0.5, color='darkblue', zorder=5, markersize=16.25)
-plt.xticks(x_gr, rotation = 90, fontsize = 20)
-plt.yticks(y_gr, fontsize=25)
-plt.ylabel('Surface gravity (log(g)) of stellar host', fontsize = 27)
-plt.grid()
-plt.savefig(path1 + '/Results/stellar_prop/lg.png')
-plt.close(fig_gr)
-
-fig_teff = plt.figure(figsize=(27,15.88))
-x_teff = np.arange(0, len(name2), 1)
-y_teff = np.arange(3000,7500,500)
-plt.errorbar(name2, teff2, fmt='o', elinewidth=1, alpha=0.5, color='darkblue', zorder=5, markersize=16.25)
-plt.xticks(x_teff, rotation = 90, fontsize = 20)
-plt.yticks(y_teff, fontsize = 25)
-plt.ylabel('Effective temperature of stellar host', fontsize = 27)
-plt.grid()
-plt.savefig(path1 + '/Results/stellar_prop/teff.png')
-plt.close(fig_teff)
-
-#-------------------------------------------------------------------------
-print('----------------Plots to check how good was the fit----------------------')
-#-------------------------------------------------------------------------
-
-amax_t = np.max(aste2)
-pmax_t = np.max(p2)
-rmax_t = np.max(rprst2)
-amin_t = np.min(aste2)
-pmin_t = np.min(p2)
-rmin_t = np.min(rprst2)
-
-#------------------------------------------------
-print('-----------------For a/R*-----------------------')
-#------------------------------------------------
-
-a_j, a_jp, a_jn = np.loadtxt(path1 + '/Results/comp_a_r_p/aste.dat', usecols = (1,2,3), unpack = True)
-
-amax_j = np.max(a_j)
-amin_j = np.min(a_j)
-
-xla_j = np.minimum(amin_t, amin_j)
-xua_j = np.maximum(amax_t, amax_j)
-
-x1a = y1a = np.linspace(xla_j, xua_j, 100)
-y11a = np.zeros(len(x1a))
-
-diff_a = np.array([])
-diff_ae = np.array([])
-
-for i in range(len(a_j)):
-	at1 = np.random.normal(aste2[i],asteperr2[i],10000)
-	ac1 = np.random.normal(a_j[i], a_jp[i], 10000)
-	diff1 = at1 - ac1
-	am1 = np.median(diff1)
-	ae1 = np.std(diff1)
-	diff_a = np.hstack((diff_a,am1))
-	diff_ae = np.hstack((diff_ae,ae1))
-
-fig_a = plt.figure(figsize = (8,10))
-gs_a = gd.GridSpec(2, 1, height_ratios = [4,1])
-
-ax_a = plt.subplot(gs_a[0])
-
-ax_a.errorbar(aste2, a_j, xerr = [astenerr2, asteperr2], yerr = [a_jn, a_jp], fmt = '.', elinewidth=1, alpha=0.5, color='black', zorder=5)
-
-plt.xlim([xla_j, xua_j])
-plt.ylim([xla_j, xua_j])
-ax_a.plot(x1a, y1a, 'k--')
-ax_a.grid()
-plt.ylabel(r'$a/R_*$ (Observed)')
-#plt.title('Comparison between literature values and calculated values of a/R*')
-
-ax1_a = plt.subplot(gs_a[1], sharex = ax_a)
-
-ax1_a.errorbar(aste2, diff_a, xerr = [astenerr2, asteperr2], yerr = diff_ae, fmt = '.', elinewidth=1, alpha=0.5, color='black', zorder=5)
-
-plt.xlim([xla_j, xua_j])
-plt.ylim([-2,2])
-ax1_a.plot(x1a, y11a, 'k--')
-ax1_a.grid()
-plt.ylabel('Residuals')
-plt.xlabel(r'Values of $a/R_*$ taken the from the literature')
-
-plt.subplots_adjust(hspace = 0.2)
-plt.savefig(path1 + '/Results/comp_a_r_p/a.pdf')
-
-diff_a1 = np.abs(diff_a)
-erra1 = 3*(asteperr + a_jp)
-
-fa = open(path1 + '/Results/comp_a_r_p/off_a.dat', 'w')
-fa.write('#These are the systems which have residulas larger than 3-sigma\n')
-
-for i in range(len(diff_a)):
-	if diff_a1[i] > erra1[i]:
-		fa.write(name[i] + '\n')
-
-fa.close()
-plt.close(fig_a)
-
-#------------------------------------------------
-print('-----------------For Period---------------------')
-#------------------------------------------------
-
-p_j, p_jp, p_jn = np.loadtxt(path1 + '/Results/comp_a_r_p/period.dat', usecols = (1,2,3), unpack = True)
-
-pmax_j = np.max(p_j)
-pmin_j = np.min(p_j)
-
-xlp_j = np.minimum(pmin_t, pmin_j)
-xup_j = np.maximum(pmax_t, pmax_j)
-
-x1p = y1p = np.linspace(xlp_j, xup_j, 100)
-y11p = np.zeros(len(x1p))
-
-diff_p = np.array([])
-diff_pe = np.array([])
-
-for i in range(len(p_j)):
-	pt1 = np.random.normal(p2[i],pperr2[i],10000)
-	pc1 = np.random.normal(p_j[i], p_jp[i], 10000)
-	diff1 = (pt1 - pc1)*86400
-	pm1 = np.median(diff1)
-	pe1 = np.std(diff1)
-	diff_p = np.hstack((diff_p,pm1))
-	diff_pe = np.hstack((diff_pe,pe1))
-
-fig_p = plt.figure(figsize = (8,10))
-gs_p = gd.GridSpec(2, 1, height_ratios = [4,1])
-
-ax_p = plt.subplot(gs_p[0])
-
-ax_p.errorbar(p2, p_j, xerr = [pnerr2, pperr2], yerr = [p_jn, p_jp], fmt = '.', elinewidth=1, alpha=0.5, color='black', zorder=5)
-
-plt.xlim([xlp_j, xup_j])
-plt.ylim([xlp_j, xup_j])
-ax_p.plot(x1p, y1p, 'k--')
-ax_p.grid()
-
-plt.ylabel('Period (Observed - in days)')
-#plt.title('Comparison between literature values and calculated values of period')
-
-ax1_p = plt.subplot(gs_p[1], sharex = ax_p)
-
-ax1_p.errorbar(p2, diff_p, xerr = [pnerr2, pperr2], yerr = diff_pe, fmt = '.', elinewidth=1, alpha=0.5, color='black', zorder=5)
-
-plt.xlim([xlp_j, xup_j])
-plt.ylim([-3,3])
-ax1_p.plot(x1p, y11p, 'k--')
-ax1_p.grid()
-plt.ylabel('Residuals (in sec)')
-plt.xlabel('Values of period taken from the literature')
-
-plt.subplots_adjust(hspace = 0.2)
-plt.savefig(path1 + '/Results/comp_a_r_p/period.pdf')
-
-diff_p1 = np.abs(diff_p)
-errp1 = 3*(pperr + p_jp)*86400
-
-fp = open(path1 + '/Results/comp_a_r_p/off_p.dat', 'w')
-fp.write('These are the systems which have residulas larger than 3-sigma\n')
-
-for i in range(len(diff_p)):
-	if diff_p1[i] > errp1[i]:
-		fp.write(name[i] + '\n')
-
-fp.close()
-plt.close(fig_p)
-
-#------------------------------------------------
-print('-----------------For Rp/R*----------------------')
-#------------------------------------------------
-
-r_j, r_jp, r_jn = np.loadtxt(path1 + '/Results/comp_a_r_p/rprste.dat', usecols = (1,2,3), unpack = True)
-
-rmax_j = np.max(r_j)
-rmin_j = np.min(r_j)
-
-xlr_j = np.minimum(rmin_t, rmin_j)
-xur_j = np.maximum(rmax_t, rmax_j)
-
-x1r = y1r = np.linspace(xlr_j, xur_j, 100)
-y11r = np.zeros(len(x1r))
-
-
-diff_r = np.array([])
-diff_re = np.array([])
-
-for i in range(len(r_j)):
-	rt1 = np.random.normal(rprst2[i],rprstperr2[i],10000)
-	rc1 = np.random.normal(r_j[i], r_jp[i], 10000)
-	diff1 = rt1 - rc1
-	rm1 = np.median(diff1)
-	re1 = np.std(diff1)
-	diff_r = np.hstack((diff_r,rm1))
-	diff_re = np.hstack((diff_re,re1))
-
-fig_r = plt.figure(figsize = (8,10))
-gs_r = gd.GridSpec(2, 1, height_ratios = [4,1])
-
-ax_r = plt.subplot(gs_r[0])
-
-ax_r.errorbar(rprst2, r_j, xerr = [rprstnerr2, rprstperr2], yerr = [r_jn, r_jp], fmt = '.', elinewidth=1, alpha=0.5, color='black', zorder=5)
-
-plt.xlim([xlr_j, xur_j])
-plt.ylim([xlr_j, xur_j])
-ax_r.plot(x1r, y1r, 'k--')
-ax_r.grid()
-
-plt.ylabel(r'$R_p/R_*$ (Observed)')
-#plt.title('Comparison between literature values and calculated values of Rp/R*')
-
-ax1_r = plt.subplot(gs_r[1], sharex = ax_r)
-
-ax1_r.errorbar(rprst2, diff_r, xerr = [rprstnerr2, rprstperr2], yerr = diff_re, fmt = '.', elinewidth=1, alpha=0.5, color='black', zorder=5)
-
-plt.xlim([xlr_j, xur_j])
-plt.ylim([-0.20,0.10])
-ax1_r.plot(x1r, y11r, 'k--')
-ax1_r.grid()
-plt.ylabel('Residuals')
-plt.xlabel('Values of Rp/R* taken from literature')
-
-plt.subplots_adjust(hspace = 0.2)
-plt.savefig(path1 + '/Results/comp_a_r_p/r.pdf')
-
-diff_r1 = np.abs(diff_r)
-errr1 = 3*(rprstperr2 + r_jp)
-
-fr = open(path1 + '/Results/comp_a_r_p/off_r.dat', 'w')
-fr.write('These are the systems which have residulas larger than 3-sigma\n')
-
-for i in range(len(diff_r)):
-	if diff_r1[i] > errr1[i]:
-		fr.write(name2[i]+ '\n')
-
-fr.close()
-plt.close(fig_r)
-
-#------------------------------------------------
-print('----------------For Tc--------------------------')
-#------------------------------------------------
-tc_t1, tc_te1 = np.loadtxt(path1 + '/Results/comp_a_r_p/to_the.dat', usecols = (1,2), unpack = True)
-
-tc_t = np.array([])
-tc_te = np.array([])
-
-for i in range(len(tc_t1)):
-	t1 = np.random.normal(tc_t1[i], tc_te1[i], 10000)
-	t2 = t1 - 2457000
-	t3 = np.median(t2)
-	t4 = np.std(t2)
-	tc_t = np.hstack((tc_t,t3))
-	tc_te = np.hstack((tc_te,t4))
-
-tc_j1, tc_jp1, tc_jn1 = np.loadtxt(path1 + '/Results/comp_a_r_p/tc.dat', usecols = (1,2,3), unpack = True)
-
-tc_j = np.array([])
-tc_jp = np.array([])
-tc_jn = tc_jn1
-
-for i in range(len(tc_j1)):
-	t5 = np.random.normal(tc_j1[i], tc_jp1[i], 10000)
-	t6 = t5 - 2457000
-	t7 = np.median(t6)
-	t8 = np.std(t6)
-	tc_j = np.hstack((tc_j,t7))
-	tc_jp = np.hstack((tc_jp,t8))
-
-tmax_t = np.max(tc_t)
-tmin_t = np.min(tc_t)
-
-tcmax_j = np.max(tc_j)
-tcmin_j = np.min(tc_j)
-
-xlt_j = np.minimum(tmin_t, tcmin_j)
-xut_j = np.maximum(tmax_t, tcmax_j)
-
-x1t = y1t = np.linspace(xlt_j, xut_j, 100)
-y11t = np.zeros(len(x1t))
-
-diff_t = np.array([])
-diff_te = np.array([])
-
-for i in range(len(tc_j)):
-	tt1 = np.random.normal(tc_t[i],tc_te[i],10000)
-	tc1 = np.random.normal(tc_j[i], tc_jp[i], 10000)
-	diff1 = (tt1 - tc1)*1440
-	tm1 = np.median(diff1)
-	te1 = np.std(diff1)
-	diff_t = np.hstack((diff_t,tm1))
-	diff_te = np.hstack((diff_te,te1))
-
-fig_t = plt.figure(figsize = (8,10))
-gs_t = gd.GridSpec(2, 1, height_ratios = [4,1])
-
-ax_t = plt.subplot(gs_t[0])
-
-ax_t.errorbar(tc_t, tc_j, xerr = tc_te, yerr = [tc_jn, tc_jp], fmt = '.', elinewidth=1, alpha=0.5, color='black', zorder=5)
-
-plt.xlim([xlt_j, xut_j])
-plt.ylim([xlt_j, xut_j])
-ax_t.plot(x1t, y1t, 'k--')
-ax_t.grid()
-
-plt.ylabel(r'$T_c$ (Observed - in TJD)')
-#plt.title('Comparison between literature values and calculated values of Tc')
-
-ax1_t = plt.subplot(gs_t[1], sharex = ax_t)
-
-ax1_t.errorbar(tc_t, diff_t, xerr = tc_te, yerr = diff_te, fmt = '.', elinewidth=1, alpha=0.5, color='black', zorder=5)
-
-plt.xlim([xlt_j, xut_j])
-plt.ylim([-15,15])
-ax1_t.plot(x1t, y11t, 'k--')
-ax1_t.grid()
-plt.ylabel('Residuals (s)')
-plt.xlabel('Values of Tc taken from literature')
-
-plt.subplots_adjust(hspace = 0.2)
-plt.savefig(path1 + '/Results/comp_a_r_p/tc.pdf')
-plt.close(fig_t)
-
-diff_t1 = np.abs(diff_t)
-errt1 = 3*(tc_te + tc_jp)*1440
-
-ft = open(path1 + '/Results/comp_a_r_p/off_t.dat', 'w')
-ft.write('These are the systems which have residulas larger than 3-sigma\n')
-
-for i in range(len(diff_t)):
-	if diff_t1[i] > errt1[i]:
-		ft.write(name[i] + '\n')
-
-ft.close()
-
-#-------------------------------------------------------------------------
-print('-------------------------Plots to compare LDCs---------------------------')
-#-------------------------------------------------------------------------
-
-u1_j, u1_jp, u1_jn, u2_j, u2_jp, u2_jn = np.loadtxt(path1 + '/Results/cal_us_and_evidance/cal_u1_u2.dat', usecols = (1,2,3,4,5,6), unpack = True)
-
-u1max_j = np.max(u1_j)
-u1min_j = np.min(u1_j)
-u2max_j = np.max(u2_j)
-u2min_j = np.min(u2_j)
-
-#----------------------------------------
-#--How good are the Claret(2017) LDCs?---
-#----------------------------------------
-
-u1_c_p, u2_c_p = np.loadtxt(path1 + '/Phoenix/claret_limiting_LDC_pho.dat', usecols = (1,2), unpack = True)
-
-u1max_c_p = np.max(u1_c_p)
-u1min_c_p = np.min(u1_c_p)
-u2max_c_p = np.max(u2_c_p)
-u2min_c_p = np.min(u2_c_p)
-
-u1_c_a, u2_c_a = np.loadtxt(path1 + '/Atlas/claret_limiting_LDC_ata.dat', usecols = (1,2), unpack = True)
-
-u1max_c_a = np.max(u1_c_a)
-u1min_c_a = np.min(u1_c_a)
-u2max_c_a = np.max(u2_c_a)
-u2min_c_a = np.min(u2_c_a)
-
-#-----------------------
-#--------u1-------------
-#-----------------------
-
-xlu1_c_p = np.minimum(u1min_j, u1min_c_p)
-xuu1_c_p = np.maximum(u1max_j, u1max_c_p)
-
-xlu1_c_a = np.minimum(u1min_j, u1min_c_a)
-xuu1_c_a = np.maximum(u1max_j, u1max_c_a)
-
-xlo = np.minimum(xlu1_c_p, xlu1_c_a)
-xup = np.maximum(xuu1_c_p, xuu1_c_a)
-
-x1u1_c_p = y1u1_c_p = np.linspace(xlo, xup, 100)
-y11u1_c_p = np.zeros(len(x1u1_c_p))
-
-diff_u1_c_p = np.array([])#--------------------------------------------------------------------------------------------
-diff_u1_c_pe = np.array([])#-------------------------------------------------------------------------------------------
-
-for i in range(len(u1_j)):
-	u11_c_p = np.random.normal(u1_c_p[i], 0, 10000)
-	u11_j = np.random.normal(u1_j[i], u1_jp[i], 10000)
-	diff1 = u11_c_p - u11_j
-	u11_m = np.median(diff1)
-	u11_e = np.std(diff1)
-	diff_u1_c_p = np.hstack((diff_u1_c_p, u11_m))
-	diff_u1_c_pe = np.hstack((diff_u1_c_pe, u11_e))
-
-diff_u1_c_a = np.array([])#--------------------------------------------------------------------------------------------
-diff_u1_c_ae = np.array([])#-------------------------------------------------------------------------------------------
-
-for i in range(len(u1_j)):
-	u11_c_a = np.random.normal(u1_c_a[i], 0, 10000)
-	u11_j = np.random.normal(u1_j[i], u1_jp[i], 10000)
-	diff1 = u11_c_a - u11_j
-	u11_m = np.median(diff1)
-	u11_e = np.std(diff1)
-	diff_u1_c_a = np.hstack((diff_u1_c_a, u11_m))
-	diff_u1_c_ae = np.hstack((diff_u1_c_ae, u11_e))
-
-
-fig_u1_c_p = plt.figure(figsize=(8,10))
-gs_u1_c_p = gd.GridSpec(2, 1, height_ratios = [4,1])
-
-ax_u1_c_p = plt.subplot(gs_u1_c_p[0])
-
-ax_u1_c_p.errorbar(u1_j, u1_c_p, xerr = [u1_jn, u1_jp], fmt='.', elinewidth=1, alpha=0.5, color='orangered', zorder=5, label = 'PHOENIX LDCs')
-ax_u1_c_p.errorbar(u1_j, u1_c_a, xerr = [u1_jn, u1_jp], fmt='.', elinewidth=1, alpha=0.5, color='cornflowerblue',zorder=5, label = 'ATLAS LDCs')
-
-ax_u1_c_p.plot(x1u1_c_p, y1u1_c_p, 'k--')
-ax_u1_c_p.grid()
-
-plt.xlim([xlo, xup])
-plt.ylim([xlo, xup])
-
-plt.legend(loc='best')
-plt.ylabel(r'$u_1$ (Theoretical)')
-plt.title('Values from Claret(2017)')
-
-ax1_u1_c_p = plt.subplot(gs_u1_c_p[1], sharex = ax_u1_c_p)
-
-ax1_u1_c_p.errorbar(u1_j, diff_u1_c_p, xerr = [u1_jn, u1_jp], yerr = diff_u1_c_pe, fmt='.', elinewidth=1, alpha=0.5, color='orangered', zorder=5)
-ax1_u1_c_p.errorbar(u1_j, diff_u1_c_a, xerr = [u1_jn, u1_jp], yerr = diff_u1_c_ae, fmt = '.', elinewidth=1, alpha=0.5, color='cornflowerblue',zorder=5)
-
-ax1_u1_c_p.plot(x1u1_c_p, y11u1_c_p, 'k--')
-ax1_u1_c_p.grid()
-plt.ylabel('Residuals')
-plt.xlabel(r'$u_1$ (Observed)')
-
-plt.subplots_adjust(hspace = 0.2)
-plt.savefig(path1 + '/Results/cal_us_and_evidance/u1_cla.pdf')
-plt.close(fig_u1_c_p)
-
-#-----------------------
-#--------u2-------------
-#-----------------------
-
-xlu2_c_p = np.minimum(u2min_j, u2min_c_p)
-xuu2_c_p = np.maximum(u2max_j, u2max_c_p)
-
-xlu2_c_a = np.minimum(u2min_j, u2min_c_a)
-xuu2_c_a = np.maximum(u2max_j, u2max_c_a)
-
-xlo = np.minimum(xlu2_c_p, xlu2_c_a)
-xup = np.maximum(xuu2_c_p, xuu2_c_a)
-
-x1u2_c_p = y1u2_c_p = np.linspace(xlo, xup, 100)
-y11u2_c_p = np.zeros(len(x1u2_c_p))
-
-diff_u2_c_p = np.array([])#--------------------------------------------------------------------------------------------
-diff_u2_c_pe = np.array([])#-------------------------------------------------------------------------------------------
-
-for i in range(len(u2_j)):
-	u22_c_p = np.random.normal(u2_c_p[i], 0, 10000)
-	u22_j = np.random.normal(u2_j[i], u2_jp[i], 10000)
-	diff2 = u22_c_p - u22_j
-	u22_m = np.median(diff2)
-	u22_e = np.std(diff2)
-	diff_u2_c_p = np.hstack((diff_u2_c_p, u22_m))
-	diff_u2_c_pe = np.hstack((diff_u2_c_pe, u22_e))
-
-diff_u2_c_a = np.array([])#--------------------------------------------------------------------------------------------
-diff_u2_c_ae = np.array([])#-------------------------------------------------------------------------------------------
-
-for i in range(len(u2_j)):
-	u22_c_a = np.random.normal(u2_c_a[i], 0, 10000)
-	u22_j = np.random.normal(u2_j[i], u2_jp[i], 10000)
-	diff2 = u22_c_a - u22_j
-	u22_m = np.median(diff2)
-	u22_e = np.std(diff2)
-	diff_u2_c_a = np.hstack((diff_u2_c_a, u22_m))
-	diff_u2_c_ae = np.hstack((diff_u2_c_ae, u22_e))
-
-
-fig_u2_c_p = plt.figure(figsize=(8,10))
-gs_u2_c_p = gd.GridSpec(2, 1, height_ratios = [4,1])
-
-ax_u2_c_p = plt.subplot(gs_u2_c_p[0])
-
-ax_u2_c_p.errorbar(u2_j, u2_c_p, xerr = [u2_jn, u2_jp], fmt='.', elinewidth=1, alpha=0.5, color='orangered', zorder=5, label = 'PHOENIX LDCs')
-ax_u2_c_p.errorbar(u2_j, u2_c_a, xerr = [u2_jn, u2_jp], fmt='.', elinewidth=1, alpha=0.5, color='cornflowerblue',zorder=5, label = 'ATLAS LDCs')
-
-ax_u2_c_p.plot(x1u2_c_p, y1u2_c_p, 'k--')
-ax_u2_c_p.grid()
-
-plt.xlim([xlo, xup])
-plt.ylim([xlo, xup])
-
-plt.legend(loc='best')
-plt.ylabel(r'$u_2$ (Theoretical)')
-plt.title('Values from Claret(2017)')
-
-ax1_u2_c_p = plt.subplot(gs_u2_c_p[1], sharex = ax_u2_c_p)
-
-ax1_u2_c_p.errorbar(u2_j, diff_u2_c_p, xerr = [u2_jn, u2_jp], yerr = diff_u2_c_pe, fmt='.', elinewidth=1, alpha=0.5, color='orangered', zorder=5)
-ax1_u2_c_p.errorbar(u2_j, diff_u2_c_a, xerr = [u2_jn, u2_jp], yerr = diff_u2_c_ae, fmt='.', elinewidth=1, alpha=0.5, color='cornflowerblue',zorder=5)
-
-ax1_u2_c_p.plot(x1u2_c_p, y11u2_c_p, 'k--')
-ax1_u2_c_p.grid()
-plt.ylabel('Residuals')
-plt.xlabel(r'$u_2$ (Observed)')
-
-plt.subplots_adjust(hspace = 0.2)
-plt.savefig(path1 + '/Results/cal_us_and_evidance/u2_cla.pdf')
-plt.close(fig_u2_c_p)
-
-#------------------------------------------------
-#--------How good are the Code LDCs?-------------
-#------------------------------------------------
-
-u1_co_p, u2_co_p = np.loadtxt(path1 + '/Phoenix/code_limiting_LDC_pho.dat', usecols = (1,2), unpack = True)
-
-u1max_co_p = np.max(u1_co_p)
-u1min_co_p = np.min(u1_co_p)
-u2max_co_p = np.max(u2_co_p)
-u2min_co_p = np.min(u2_co_p)
-
-u1_co_a, u2_co_a = np.loadtxt(path1 + '/Atlas/code_limiting_LDC_ata.dat', usecols = (1,2), unpack = True)
-
-u1max_co_a = np.max(u1_co_a)
-u1min_co_a = np.min(u1_co_a)
-u2max_co_a = np.max(u2_co_a)
-u2min_co_a = np.min(u2_co_a)
-
-#-----------------------
-#--------u1-------------
-#-----------------------
-
-xlu1_co_p = np.minimum(u1min_j, u1min_co_p)
-xuu1_co_p = np.maximum(u1max_j, u1max_co_p)
-
-xlu1_co_a = np.minimum(u1min_j, u1min_co_a)
-xuu1_co_a = np.maximum(u1max_j, u1max_co_a)
-
-xlo = np.minimum(xlu1_co_p, xlu1_co_a)
-xup = np.maximum(xuu1_co_p, xuu1_co_a)
-
-x1u1_co_p = y1u1_co_p = np.linspace(xlo, xup, 100)
-y11u1_co_p = np.zeros(len(x1u1_co_p))
-
-diff_u1_co_p = np.array([])#--------------------------------------------------------------------------------------------
-diff_u1_co_pe = np.array([])#-------------------------------------------------------------------------------------------
-
-for i in range(len(u1_j)):
-	u11_co_p = np.random.normal(u1_co_p[i], 0, 10000)
-	u11_j = np.random.normal(u1_j[i], u1_jp[i], 10000)
-	diff1 = u11_co_p - u11_j
-	u11_m = np.median(diff1)
-	u11_e = np.std(diff1)
-	diff_u1_co_p = np.hstack((diff_u1_co_p, u11_m))
-	diff_u1_co_pe = np.hstack((diff_u1_co_pe, u11_e))
-
-diff_u1_co_a = np.array([])#--------------------------------------------------------------------------------------------
-diff_u1_co_ae = np.array([])#-------------------------------------------------------------------------------------------
-
-for i in range(len(u1_j)):
-	u11_co_a = np.random.normal(u1_co_a[i], 0, 10000)
-	u11_j = np.random.normal(u1_j[i], u1_jp[i], 10000)
-	diff1 = u11_co_a - u11_j
-	u11_m = np.median(diff1)
-	u11_e = np.std(diff1)
-	diff_u1_co_a = np.hstack((diff_u1_co_a, u11_m))
-	diff_u1_co_ae = np.hstack((diff_u1_co_ae, u11_e))
-
-
-fig_u1_co_p = plt.figure(figsize=(8,10))
-gs_u1_co_p = gd.GridSpec(2, 1, height_ratios = [4,1])
-
-ax_u1_co_p = plt.subplot(gs_u1_co_p[0])
-
-ax_u1_co_p.errorbar(u1_j, u1_co_p, xerr = [u1_jn, u1_jp], fmt='.', elinewidth=1, alpha=0.5, color='orangered', zorder=5, label = 'PHOENIX LDCs')
-ax_u1_co_p.errorbar(u1_j, u1_co_a, xerr = [u1_jn, u1_jp], fmt='.', elinewidth=1, alpha=0.5, color='cornflowerblue',zorder=5, label = 'ATLAS LDCs')
-
-ax_u1_co_p.plot(x1u1_co_p, y1u1_co_p, 'k--')
-ax_u1_co_p.grid()
-
-plt.xlim([xlo, xup])
-plt.ylim([xlo, xup])
-
-plt.legend(loc='best')
-plt.ylabel(r'$u_1$ (Theoretical)')
-plt.title('Values from Espinoza \& Jordan(2015)')
-
-ax1_u1_co_p = plt.subplot(gs_u1_co_p[1], sharex = ax_u1_co_p)
-
-ax1_u1_co_p.errorbar(u1_j, diff_u1_co_p, xerr = [u1_jn, u1_jp], yerr = diff_u1_co_pe, fmt='.', elinewidth=1, alpha=0.5, color='orangered', zorder=5)
-ax1_u1_co_p.errorbar(u1_j, diff_u1_co_a, xerr = [u1_jn, u1_jp], yerr = diff_u1_co_ae, fmt='.', elinewidth=1, alpha=0.5, color='cornflowerblue',zorder=5)
-
-ax1_u1_co_p.plot(x1u1_co_p, y11u1_co_p, 'k--')
-ax1_u1_co_p.grid()
-plt.ylabel('Residuals')
-plt.xlabel(r'$u_1$ (Observed)')
-
-plt.subplots_adjust(hspace = 0.2)
-plt.savefig(path1 + '/Results/cal_us_and_evidance/u1_code.pdf')
-plt.close(fig_u1_co_p)
-
-#-----------------------
-#--------u2-------------
-#-----------------------
-
-xlu2_co_p = np.minimum(u2min_j, u2min_co_p)
-xuu2_co_p = np.maximum(u2max_j, u2max_co_p)
-
-xlu2_co_a = np.minimum(u2min_j, u2min_co_a)
-xuu2_co_a = np.maximum(u2max_j, u2max_co_a)
-
-xlo = np.minimum(xlu2_co_p, xlu2_co_a)
-xup = np.maximum(xuu2_co_p, xuu2_co_a)
-
-x1u2_co_p = y1u2_co_p = np.linspace(xlo, xup, 100)
-y11u2_co_p = np.zeros(len(x1u2_co_p))
-
-diff_u2_co_p = np.array([])#--------------------------------------------------------------------------------------------
-diff_u2_co_pe = np.array([])#-------------------------------------------------------------------------------------------
-
-for i in range(len(u2_j)):
-	u22_co_p = np.random.normal(u2_co_p[i], 0, 10000)
-	u22_j = np.random.normal(u2_j[i], u2_jp[i], 10000)
-	diff2 = u22_co_p - u22_j
-	u22_m = np.median(diff2)
-	u22_e = np.std(diff2)
-	diff_u2_co_p = np.hstack((diff_u2_co_p, u22_m))
-	diff_u2_co_pe = np.hstack((diff_u2_co_pe, u22_e))
-
-diff_u2_co_a = np.array([])#--------------------------------------------------------------------------------------------
-diff_u2_co_ae = np.array([])#-------------------------------------------------------------------------------------------
-
-for i in range(len(u2_j)):
-	u22_co_a = np.random.normal(u2_co_a[i], 0, 10000)
-	u22_j = np.random.normal(u2_j[i], u2_jp[i], 10000)
-	diff2 = u22_co_a - u22_j
-	u22_m = np.median(diff2)
-	u22_e = np.std(diff2)
-	diff_u2_co_a = np.hstack((diff_u2_co_a, u22_m))
-	diff_u2_co_ae = np.hstack((diff_u2_co_ae, u22_e))
-
-
-fig_u2_co_p = plt.figure(figsize=(8,10))
-gs_u2_co_p = gd.GridSpec(2, 1, height_ratios = [4,1])
-
-ax_u2_co_p = plt.subplot(gs_u2_co_p[0])
-
-ax_u2_co_p.errorbar(u2_j, u2_co_p, xerr = [u2_jn, u2_jp], fmt='.', elinewidth=1, alpha=0.5, color='orangered', zorder=5, label = 'PHOENIX LDCs')
-ax_u2_co_p.errorbar(u2_j, u2_co_a, xerr = [u2_jn, u2_jp], fmt='.', elinewidth=1, alpha=0.5, color='cornflowerblue',zorder=5, label = 'ATLAS LDCs')
-
-ax_u2_co_p.plot(x1u2_co_p, y1u2_co_p, 'k--')
-ax_u2_co_p.grid()
-
-plt.xlim([xlo, xup])
-plt.ylim([xlo, xup])
-
-plt.legend(loc='best')
-plt.ylabel(r'$u_2$ (Theoretical)')
-plt.title('Values from Espinoza \& Jordan(2015)')
-
-ax1_u2_co_p = plt.subplot(gs_u2_co_p[1], sharex = ax_u2_co_p)
-
-ax1_u2_co_p.errorbar(u2_j, diff_u2_co_p, xerr = [u2_jn, u2_jp], yerr = diff_u2_co_pe, fmt='.', elinewidth=1, alpha=0.5, color='orangered', zorder=5)
-ax1_u2_co_p.errorbar(u2_j, diff_u2_co_a, xerr = [u2_jn, u2_jp], yerr = diff_u2_co_ae, fmt='.', elinewidth=1, alpha=0.5, color='cornflowerblue',zorder=5)
-
-ax1_u2_co_p.plot(x1u2_co_p, y11u2_co_p, 'k--')
-ax1_u2_co_p.grid()
-plt.ylabel('Residuals')
-plt.xlabel(r'$u_2$ (Observed)')
-
-plt.subplots_adjust(hspace = 0.2)
-plt.savefig(path1 + '/Results/cal_us_and_evidance/u2_code.pdf')
-plt.close(fig_u2_co_p)
-
-
-#--------------------------------------------------------------------------------------------------
-print('----------------------------Making Table of mean offset in LDCs-----------------------------------')
-#--------------------------------------------------------------------------------------------------
-
-f101 = open(path1 + '/Results/mean_off.dat', 'w')
-
-#-----------diff_u1_c_p
-m1 = np.array([])
-diff = np.random.normal(0,0,10000)
-mean1 = np.array([])
-for i in range(len(diff_u1_c_p)):
-	diff1 = np.random.normal(diff_u1_c_p[i], diff_u1_c_pe[i], 10000)
-	diff = np.vstack((diff, diff1))
-for i in range(10000):
-	for j in range(len(diff_u1_c_p)):
-		m1 = np.hstack((m1,diff[j+1][i]))
-		m2 = np.mean(m1)
-		mean1 = np.hstack((mean1,m2))
-med1 = np.median(mean1)
-std1 = np.std(mean1)
-
-#-----------diff_u2_c_p
-m1 = np.array([])
-diff = np.random.normal(0,0,10000)
-mean2 = np.array([])
-for i in range(len(diff_u2_c_p)):
-	diff1 = np.random.normal(diff_u2_c_p[i], diff_u2_c_pe[i], 10000)
-	diff = np.vstack((diff, diff1))
-for i in range(10000):
-	for j in range(len(diff_u2_c_p)):
-		m1 = np.hstack((m1,diff[j+1][i]))
-		m2 = np.mean(m1)
-		mean2 = np.hstack((mean2,m2))
-med2 = np.median(mean2)
-std2 = np.std(mean2)
-
-#-----------diff_u1_c_a
-m1 = np.array([])
-diff = np.random.normal(0,0,10000)
-mean3 = np.array([])
-for i in range(len(diff_u1_c_a)):
-	diff1 = np.random.normal(diff_u1_c_a[i], diff_u1_c_ae[i], 10000)
-	diff = np.vstack((diff, diff1))
-for i in range(10000):
-	for j in range(len(diff_u1_c_a)):
-		m1 = np.hstack((m1,diff[j+1][i]))
-		m2 = np.mean(m1)
-		mean3 = np.hstack((mean3,m2))
-med3 = np.median(mean3)
-std3 = np.std(mean3)
-
-#-----------diff_u2_c_a
-m1 = np.array([])
-diff = np.random.normal(0,0,10000)
-mean4 = np.array([])
-for i in range(len(diff_u2_c_a)):
-	diff1 = np.random.normal(diff_u2_c_a[i], diff_u2_c_ae[i], 10000)
-	diff = np.vstack((diff, diff1))
-for i in range(10000):
-	for j in range(len(diff_u2_c_a)):
-		m1 = np.hstack((m1,diff[j+1][i]))
-		m2 = np.mean(m1)
-		mean4 = np.hstack((mean4,m2))
-med4 = np.median(mean4)
-std4 = np.std(mean4)
-
-###############################
-
-#-----------diff_u1_co_p
-m1 = np.array([])
-diff = np.random.normal(0,0,10000)
-mean5 = np.array([])
-for i in range(len(diff_u1_co_p)):
-	diff1 = np.random.normal(diff_u1_co_p[i], diff_u1_co_pe[i], 10000)
-	diff = np.vstack((diff, diff1))
-for i in range(10000):
-	for j in range(len(diff_u1_co_p)):
-		m1 = np.hstack((m1,diff[j+1][i]))
-		m2 = np.mean(m1)
-		mean5 = np.hstack((mean5,m2))
-med5 = np.median(mean5)
-std5 = np.std(mean5)
-
-#-----------diff_u2_co_p
-m1 = np.array([])
-diff = np.random.normal(0,0,10000)
-mean6 = np.array([])
-for i in range(len(diff_u2_co_p)):
-	diff1 = np.random.normal(diff_u2_co_p[i], diff_u2_co_pe[i], 10000)
-	diff = np.vstack((diff, diff1))
-for i in range(10000):
-	for j in range(len(diff_u2_c_p)):
-		m1 = np.hstack((m1,diff[j+1][i]))
-		m2 = np.mean(m1)
-		mean6 = np.hstack((mean6,m2))
-med6 = np.median(mean6)
-std6 = np.std(mean6)
-
-#-----------diff_u1_co_a
-m1 = np.array([])
-diff = np.random.normal(0,0,10000)
-mean7 = np.array([])
-for i in range(len(diff_u1_co_a)):
-	diff1 = np.random.normal(diff_u1_co_a[i], diff_u1_co_ae[i], 10000)
-	diff = np.vstack((diff, diff1))
-for i in range(10000):
-	for j in range(len(diff_u1_co_a)):
-		m1 = np.hstack((m1,diff[j+1][i]))
-		m2 = np.mean(m1)
-		mean7 = np.hstack((mean7,m2))
-med7 = np.median(mean7)
-std7 = np.std(mean7)
-
-#-----------diff_u2_co_a
-m1 = np.array([])
-diff = np.random.normal(0,0,10000)
-mean8 = np.array([])
-for i in range(len(diff_u2_co_a)):
-	diff1 = np.random.normal(diff_u2_co_a[i], diff_u2_co_ae[i], 10000)
-	diff = np.vstack((diff, diff1))
-for i in range(10000):
-	for j in range(len(diff_u2_co_a)):
-		m1 = np.hstack((m1,diff[j+1][i]))
-		m2 = np.mean(m1)
-		mean8 = np.hstack((mean8,m2))
-med8 = np.median(mean8)
-std8 = np.std(mean8)
-
-f101.write('\t\t\t\tu1\t\t\t\tu2\n')
-f101.write('Claret(2017), PHOENIX\t\t' + str(med1) + ' +/- ' + str(std1) + '\t\t' + str(med2) + ' +/- ' + str(std2) + '\n')
-f101.write('Claret(2017), ATLAS\t\t' + str(med3) + ' +/- ' + str(std3) + '\t\t' + str(med4) + ' +/- ' + str(std4) + '\n')
-f101.write('EJ(2015), PHOENIX\t\t' + str(med5) + ' +/- ' + str(std5) + '\t\t' + str(med6) + ' +/- ' + str(std6) + '\n')
-f101.write('EJ(2015), ATLAS\t\t\t' + str(med7) + ' +/- ' + str(std7) + '\t\t' + str(med8) + ' +/- ' + str(std8) + '\n')
-f101.close()
-
-#--------------------------------------------------------------------------------------------------
-print('-------------------------------Plots of LDCs with temperature variation---------------------------')
-#--------------------------------------------------------------------------------------------------
-
-tmin = np.min(teff2)
-tmax = np.max(teff2)
-
-x = np.linspace(tmin, tmax, 100)
-y = np.zeros(len(x))
-
-def line(x,m,c):
-	function = m*x + c
-	return function
-
-#------------------------------------------------
-#---------u1 - Claret(2017) ---------------------
-#------------------------------------------------
-
-fig1 = plt.figure(figsize=(8,6))
-
-plt.fill_between(teff2, med1 + std1, med1 - std1, color = 'red', alpha = 0.5)
-plt.errorbar(teff2, diff_u1_c_p, yerr = [u1_jn, u1_jp], fmt='.', elinewidth=1, alpha=0.5, color='orangered', zorder=5, label = 'PHOENIX LDCs')
-plt.fill_between(teff2, med3 + std3, med3 - std3, color = 'blue', alpha = 0.5)
-plt.errorbar(teff2, diff_u1_c_a, yerr = [u1_jn, u1_jp], fmt='.', elinewidth=1, alpha=0.5, color='cornflowerblue',zorder=5, label = 'ATLAS LDCs')
-
-popt, pcov = cft(line, teff2, diff_u1_c_p)
-popt1, pcov1 = cft(line, teff2, diff_u1_c_a)
-
-plt.plot(teff2, line(teff2, *popt), color='orangered', linestyle=':')
-plt.plot(teff2, line(teff2, *popt1), color='cornflowerblue', linestyle=':')
-
-plt.plot(x, y, 'k--')
-plt.grid()
-plt.legend(loc='best')
-plt.ylabel(r'Residuals in $u_1$ Claret(2017) LDCs')
-plt.xlabel('Effective Temperature')
-plt.savefig(path1 + '/Results/variation_with_temp/u1_cla_te.pdf')
-plt.close(fig1)
-
-#------------------------------------------------
-#---------u2 - Claret(2017) ---------------------
-#------------------------------------------------
-
-fig2 = plt.figure(figsize=(8,6))
-
-plt.fill_between(teff2, med2 + std2, med2 - std2, color = 'red', alpha = 0.5)
-plt.errorbar(teff2, diff_u2_c_p, yerr = [u2_jn, u2_jp], fmt='.', elinewidth=1, alpha=0.5, color='orangered', zorder=5, label = 'PHOENIX LDCs')
-plt.fill_between(teff2, med4 + std4, med4 - std4, color = 'blue', alpha = 0.5)
-plt.errorbar(teff2, diff_u2_c_a, yerr = [u2_jn, u2_jp], fmt='.', elinewidth=1, alpha=0.5, color='cornflowerblue',zorder=5, label = 'ATLAS LDCs')
-
-popt2, pcov2 = cft(line, teff2, diff_u2_c_p)
-popt3, pcov3 = cft(line, teff2, diff_u2_c_a)
-
-plt.plot(teff2, line(teff2, *popt2), color='orangered', linestyle=':')
-plt.plot(teff2, line(teff2, *popt3), color='cornflowerblue', linestyle=':')
-
-plt.plot(x, y, 'k--')
-plt.grid()
-plt.legend(loc='best')
-plt.ylabel(r'Residuals in $u_2$ Claret(2017) LDCs')
-plt.xlabel('Effective Temperature')
-plt.savefig(path1 + '/Results/variation_with_temp/u2_cla_te.pdf')
-plt.close(fig2)
-
-#------------------------------------------------
-#-----------u1 - Code ---------------------------
-#------------------------------------------------
-
-fig5 = plt.figure()
-
-plt.fill_between(teff2, med5 + std5, med5 - std5, color = 'red', alpha = 0.5)
-plt.errorbar(teff2, diff_u1_co_p, yerr = [u1_jn, u1_jp], fmt='.', elinewidth=1, alpha=0.5, color='orangered', zorder=5, label = 'PHOENIX LDCs')
-plt.fill_between(teff2, med7 + std7, med7 - std7, color = 'blue', alpha = 0.5)
-plt.errorbar(teff2, diff_u1_co_a, yerr = [u1_jn, u1_jp], fmt='.', elinewidth=1, alpha=0.5, color='cornflowerblue',zorder=5, label = 'ATLAS LDCs')
-
-popt4, pcov4 = cft(line, teff2, diff_u1_co_p)
-popt5, pcov5 = cft(line, teff2, diff_u1_co_a)
-
-plt.plot(teff2, line(teff2, *popt4), color='orangered', linestyle=':')
-plt.plot(teff2, line(teff2, *popt5), color='cornflowerblue', linestyle=':')
-
-plt.plot(x, y, 'k--')
-plt.grid()
-plt.legend(loc='best')
-plt.ylabel(r'Residuals in $u_1$ - EJ(2015) LDCs')
-plt.xlabel('Effective Temperature')
-plt.savefig(path1 + '/Results/variation_with_temp/u1_code_te.pdf')
-plt.close(fig5)
-
-#------------------------------------------------
-#------------u2 - Code - PHOENIX-----------------
-#------------------------------------------------
-
-fig6 = plt.figure()
-
-plt.fill_between(teff2, med6 + std6, med6 - std6, color = 'red', alpha = 0.5)
-plt.errorbar(teff2, diff_u2_co_p, yerr = [u2_jn, u2_jp], fmt='.', elinewidth=1, alpha=0.5, color='orangered', zorder=5, label = 'PHOENIX LDCs')
-plt.fill_between(teff2, med7 + std7, med7 - std7, color = 'blue', alpha = 0.5)
-plt.errorbar(teff2, diff_u2_co_a, yerr = [u2_jn, u2_jp], fmt='.', elinewidth=1, alpha=0.5, color='cornflowerblue',zorder=5, label = 'ATLAS LDCs')
-
-popt6, pcov6 = cft(line, teff2, diff_u2_co_p)
-popt7, pcov7 = cft(line, teff2, diff_u2_co_a)
-
-plt.plot(teff2, line(teff2, *popt6), color='orangered', linestyle=':')
-plt.plot(teff2, line(teff2, *popt7), color='cornflowerblue', linestyle=':')
-
-plt.plot(x, y, 'k--')
-plt.grid()
-plt.legend(loc='best')
-plt.ylabel(r'Residuals in $u_2$ - EJ(2015) LDCs')
-plt.xlabel('Effective Temperature')
-plt.savefig(path1 + '/Results/variation_with_temp/u2_code_te.pdf')
-plt.close(fig6)
-
-print("------------------------------------------------------------------------")
-print("---------------------Your task is complete!!----------------------------")
-print("------------------------------------------------------------------------")
+print("----------------------------------------------------------------------------------")
+print("---------------------Your computing task is complete!!----------------------------")
+print("----------------------------------------------------------------------------------")
+
+print('----------------------------------------------------------------------------------')
+print('------------------Now you can to plot some amazing results------------------------')
+print('--------------------Please run plot.py to start plotting--------------------------')
+print('----------------------------------------------------------------------------------')
