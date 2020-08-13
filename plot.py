@@ -1251,7 +1251,7 @@ for i in range(len(teff)):
 	rss_u1_co_a_c = rss_u1_co_a_c + r222
 
 bis_u1_co_p_c = len(diff_u1_co_p)*np.log((rss_u1_co_p_c)/(len(diff_u1_co_p))) + np.log(len(diff_u1_co_p))
-bis_u1_co_a_c = len(diff_u1_co_p)*np.log((rss_u1_co_a_c)/(len(diff_u1_co_a))) + np.log(len(diff_u1_co_a))
+bis_u1_co_a_c = len(diff_u1_co_a)*np.log((rss_u1_co_a_c)/(len(diff_u1_co_a))) + np.log(len(diff_u1_co_a))
 
 plt.plot(t11, constant(t11, *popt4_c), color='orangered', ls='-')
 plt.plot(t11, constant(t11, *popt5_c), color='cornflowerblue', ls='-')
