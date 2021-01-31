@@ -121,6 +121,11 @@ for i in range(len(teff)):
 		if obt['obs_collection'][j] == 'TESS' and obt['dataproduct_type'][j] == 'timeseries':
 			b = np.hstack((b,j))
 	if len(b) == 0:
+		print('******************************************************************************************')
+		print('                                                                                          ')
+		print('Completed analysis for ' + str(i+1) + ' system(s) / out of ' + str(len(name)) + ' systems')
+		print('                                                                                          ')
+		print('******************************************************************************************')
 		continue
 	obsid1 = np.array([])
 	for j1 in range(len(b)):
@@ -527,7 +532,7 @@ for i in range(len(name2)):
 	c4_p = inp.griddata(pt_p, q4_p, (lg2[i],teff2[i]), fill_value = 0, method = 'cubic')
 	f1.write(name2[i] + '\t' + str(c1_p) + '\t' + str(c2_p) + '\t' + str(c3_p) + '\t' + str(c4_p) + '\n')
 	u1_p = ((12*c1_p)/35) + c2_p + ((164*c3_p)/105) + (2*c4_p)
-	u2_p = ((10*c1_p)/31) - ((34*c3_p)/63) - c4_p
+	u2_p = ((10*c1_p)/21) - ((34*c3_p)/63) - c4_p
 	f2.write(name2[i] + '\t' + str(u1_p) + '\t' + str(u2_p) + '\n')
 	#--------------------------------------
 	#----Calculating LDCs from PHOENIX-r---
@@ -542,7 +547,7 @@ for i in range(len(name2)):
 	c4_pr = inp.griddata(pt_pr, q4_pr, (lg2[i],teff2[i]), fill_value = 0, method = 'cubic')
 	f1r.write(name2[i] + '\t' + str(c1_pr) + '\t' + str(c2_pr) + '\t' + str(c3_pr) + '\t' + str(c4_pr) + '\n')
 	u1_pr = ((12*c1_pr)/35) + c2_pr + ((164*c3_pr)/105) + (2*c4_pr)
-	u2_pr = ((10*c1_pr)/31) - ((34*c3_pr)/63) - c4_pr
+	u2_pr = ((10*c1_pr)/21) - ((34*c3_pr)/63) - c4_pr
 	f2r.write(name2[i] + '\t' + str(u1_pr) + '\t' + str(u2_pr) + '\n')
 	#--------------------------------------
 	#-----Calculating LDCs from ATLAS------
@@ -558,7 +563,7 @@ for i in range(len(name2)):
 	c4_a = inp.griddata(pt_a, q4_a, (lg2[i],teff2[i],mh2[i]), fill_value = 0, method = 'linear')
 	f3.write(name2[i] + '\t' + str(c1_a) + '\t' + str(c2_a) + '\t' + str(c3_a) + '\t' + str(c4_a) + '\n')
 	u1_a = ((12*c1_a)/35) + c2_a + ((164*c3_a)/105) + (2*c4_a)
-	u2_a = ((10*c1_a)/31) - ((34*c3_a)/63) - c4_a
+	u2_a = ((10*c1_a)/21) - ((34*c3_a)/63) - c4_a
 	f4.write(name2[i] + '\t' + str(u1_a) + '\t' + str(u2_a) + '\n')
 	print('****************************************************************************************')
 	print('                                                                                        ')
@@ -584,7 +589,7 @@ name1 = np.loadtxt(path1 + '/Atlas/code_us_nl_ata.dat',dtype=str,usecols=0,unpac
 c1_code_a, c2_code_a, c3_code_a, c4_code_a = np.loadtxt(path1 + '/Atlas/code_us_nl_ata.dat', usecols=(1,2,3,4), unpack=True)
 
 u1_code_a = ((12*c1_code_a)/35) + c2_code_a + ((164*c3_code_a)/105) + (2*c4_code_a)
-u2_code_a = ((10*c1_code_a)/31) - ((34*c3_code_a)/63) - c4_code_a
+u2_code_a = ((10*c1_code_a)/21) - ((34*c3_code_a)/63) - c4_code_a
 
 for i in range(len(name1)):
 	f44.write(name1[i] + '\t\t' + str(u1_code_a[i]) + '\t\t' + str(u2_code_a[i]) + '\n')
@@ -599,7 +604,7 @@ name11 = np.loadtxt(path1 + '/Phoenix/code_us_nl_pho.dat',dtype=str,usecols=0,un
 c1_code_p, c2_code_p, c3_code_p, c4_code_p = np.loadtxt(path1 + '/Phoenix/code_us_nl_pho.dat', usecols=(1,2,3,4), unpack=True)
 
 u1_code_p = ((12*c1_code_p)/35) + c2_code_p + ((164*c3_code_p)/105) + (2*c4_code_p)
-u2_code_p = ((10*c1_code_p)/31) - ((34*c3_code_p)/63) - c4_code_p
+u2_code_p = ((10*c1_code_p)/21) - ((34*c3_code_p)/63) - c4_code_p
 
 for i in range(len(name11)):
 	f22.write(name11[i] + '\t\t' + str(u1_code_p[i]) + '\t\t' + str(u2_code_p[i]) + '\n')
