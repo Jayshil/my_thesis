@@ -113,3 +113,140 @@ def freedman_diaconis(data, returnas="width"):
 		datrng = datmax - datmin
 		result = int((datrng / bw) + 1)
 	return(result)
+
+#---------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------
+
+def lowest_bic(a):
+	"""
+	Find the lowest BIC (Bayesian Inference Crterian) among
+	three BICs.
+	I know I can just look at them manually but I am a little-
+	bit lazy to do so. Hence here I am with a function defined for it.
+	
+	Parameters
+	----------
+	a: dict
+		Values of BICs in dict.
+	n: int
+		Degree of highest polynomial of model.
+	
+	returns: dict
+		Containing the best fit model, with its BIC.
+		If two models have BIC difference less than 2,
+		then the model with a fewer number of parameters
+		would be selected.
+	"""
+	b = np.array([])
+	for i in a.values():
+		b = np.hstack((b,i))
+	def get_key(val, my_dict):
+		for key, value in my_dict.items():
+			if val == value:
+				return key
+		return "Key does not exist"
+	xx = np.min(b)
+	yy = get_key(xx, a)
+	ret = {}
+	con = np.abs(a[yy] - a['constant'])
+	lin = np.abs(a[yy] - a['linear'])
+	qua = np.abs(a[yy] - a['quadratic'])
+	if yy == 'quadratic':
+		if con < 2:
+			ret['constant'] = a['constant']
+		elif lin < 2 and lin < con:
+			ret['linear'] = a['linear']
+		else:
+			ret['quadratic'] = a['quadratic']
+	if yy == 'linear':
+		if con < 2:
+			ret['constant'] = a['constant']
+		else:
+			ret['linear'] = a['linear']
+	if yy == 'constant':
+		ret['constant'] = a['constant']
+	return ret
+
+#---------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------
+
+def binned_data(datax, datay, nos=10, datax_err=None, datay_err=None):
+	"""
+	This function creates binned array from the given array.
+	
+	Parameters
+	----------
+	datax: np.ndarray
+		One dimensional array. x-coordinate
+	datax_err: np.ndarray
+		One dimensional array. Error in x-coordinate
+		If not provided then assumes to be a zero matrix
+		of length of datax.
+	datay: np.ndarray
+		One dimensional array. y-coordinate
+	datay_err: np.ndarray
+		One dimensional array. Error in y-coordinate
+		If not provided then assumes to be a zero matrix
+		of length of datay.
+	nos: float
+		Number of binned data points you want to set.
+		Default is 10.
+
+	returns: {np.ndarray}
+		numpy array of binned data
+	"""
+	if datax_err is None:
+		datax_err = np.zeros(len(datax))
+	if datay_err is None:
+		datay_err = np.zeros(len(datay))
+	aa = []
+	for i in range(len(datax)):
+		xxx = (datax[i], datax_err[i], datay[i], datay_err[i])
+		aa.append(xxx)
+	bb = sorted(aa)
+	aaa = bbb = ccc = ddd = np.array([])
+	for i in range(len(bb)):
+		aaa = np.hstack((aaa, bb[i][0]))
+		bbb = np.hstack((bbb, bb[i][1]))
+		ccc = np.hstack((ccc, bb[i][2]))
+		ddd = np.hstack((ddd, bb[i][3]))
+	rep = int((len(datax))/(nos-1))
+	rem = len(datax) - ((nos-1)*rep)
+	bin_datax = bin_datax_err = bin_datay = bin_datay_err = np.array([])
+	k = 0
+	for i in range(nos-1):
+		du_t = np.zeros(1000)
+		for j in range(rep):
+			abc1 = np.random.normal(aaa[k], bbb[k], 1000)
+			du_t = np.vstack((du_t, abc1))
+			k = k+1
+		bint = np.mean(du_t[1:], axis=0)
+		bin_datax = np.hstack((bin_datax, np.median(bint)))
+		bin_datax_err = np.hstack((bin_datax_err, np.std(bint)))
+	rem_t = np.zeros(1000)
+	for i in range(rem):
+		abc1 = np.random.normal(aaa[k], bbb[k], 1000)
+		rem_t = np.vstack((rem_t, abc1))
+	remt = np.mean(rem_t[1:], axis=0)
+	bin_datax = np.hstack((bin_datax, np.median(remt)))
+	bin_datax_err = np.hstack((bin_datax_err, np.std(remt)))
+	k1 = 0
+	for i in range(nos-1):
+		du_d = np.zeros(1000)
+		for j in range(rep):
+			abc1 = np.random.normal(ccc[k1], ddd[k1], 1000)
+			du_d = np.vstack((du_d, abc1))
+			k1 = k1+1
+		bind = np.mean(du_d[1:], axis=0)
+		bin_datay = np.hstack((bin_datay, np.median(bind)))
+		bin_datay_err = np.hstack((bin_datay_err, np.std(bind)))
+	rem_d = np.zeros(1000)
+	for i in range(rem):
+		abc1 = np.random.normal(ccc[k1], ddd[k1], 1000)
+		rem_d = np.vstack((rem_d, abc1))
+	remd = np.mean(rem_d[1:], axis=0)
+	bin_datay = np.hstack((bin_datay, np.median(remd)))
+	bin_datay_err = np.hstack((bin_datay_err, np.std(remd)))
+	return bin_datax, bin_datax_err, bin_datay, bin_datay_err
